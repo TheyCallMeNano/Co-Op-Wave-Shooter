@@ -1,0 +1,97 @@
+[gd_scene load_steps=10 format=3 uid="uid://coyaclap7dcdh"]
+
+[ext_resource type="Script" path="res://Scripts/scrRocket.gd" id="1_26d1m"]
+[ext_resource type="PackedScene" uid="uid://dqaaggkbp0864" path="res://Models/Rocket/modRocket01.gltf" id="2_2eguq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kk2g5"]
+albedo_color = Color(1, 0.521569, 0, 1)
+emission_enabled = true
+emission = Color(1, 0, 0.282353, 1)
+emission_energy_multiplier = 0.81
+
+[sub_resource type="BoxMesh" id="BoxMesh_2nog8"]
+material = SubResource("StandardMaterial3D_kk2g5")
+
+[sub_resource type="Curve" id="Curve_s8kh7"]
+_data = [Vector2(0.0168539, 0.956044), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_icv7r"]
+radius = 1.94121
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4u3ht"]
+albedo_color = Color(0.83288, 0.073796, 2.88785e-07, 1)
+emission_enabled = true
+emission = Color(1, 0.172549, 0, 1)
+emission_energy_multiplier = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_awrhg"]
+material = SubResource("StandardMaterial3D_4u3ht")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3xmdh"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Rocket" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0013026, -0.00196099, 0.000268742)
+script = ExtResource("1_26d1m")
+
+[node name="modRocket" parent="." instance=ExtResource("2_2eguq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.43153)
+target_position = Vector3(0, 0, -1)
+
+[node name="Trail" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.407393)
+amount = 35
+lifetime_randomness = 0.31
+mesh = SubResource("BoxMesh_2nog8")
+emission_shape = 4
+emission_points = PackedVector3Array(0, 0, 0, 0, 0, 0.155, 0, 0, 0.225, 0, 0, 0.245, 0, 0, 0.39, 0, 0.125, 0.125, 0, -0.205, 0.165, 0, 0.135, 0.28, 0, -0.1, 0.25)
+direction = Vector3(0, 0, 1)
+spread = 5.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 5.0
+angular_velocity_min = 1.0
+angular_velocity_max = 5.0
+scale_amount_min = 0.01
+scale_amount_max = 0.1
+scale_amount_curve = SubResource("Curve_s8kh7")
+color = Color(0.929412, 0.419608, 0, 1)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[node name="Explosion Radius" type="Area3D" parent="."]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Explosion Radius"]
+shape = SubResource("SphereShape3D_icv7r")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="Explosion Radius"]
+emitting = false
+lifetime = 0.2
+one_shot = true
+mesh = SubResource("BoxMesh_awrhg")
+direction = Vector3(1, 1, 1)
+spread = 100.0
+initial_velocity_min = 5.0
+initial_velocity_max = 10.0
+scale_amount_min = 0.2
+scale_amount_max = 0.5
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_3xmdh")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="Explosion Radius" to="." method="_on_explosion_radius_body_entered"]
+[connection signal="finished" from="Explosion Radius/CPUParticles3D" to="." method="_on_cpu_particles_3d_finished"]

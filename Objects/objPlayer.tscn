@@ -1,0 +1,232 @@
+[gd_scene load_steps=17 format=3 uid="uid://dfvwlanihtgh7"]
+
+[ext_resource type="Script" path="res://Scripts/scrPlayer.gd" id="1_mmjxm"]
+[ext_resource type="Material" uid="uid://bcsr1ck18tigu" path="res://Materials/PlayerMat.tres" id="2_1yy68"]
+[ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="3_tm7ya"]
+[ext_resource type="PackedScene" uid="uid://c8kqpaxkqf8tg" path="res://Models/Rocket Launcher/modRocketLauncher01.gltf" id="5_4ske5"]
+[ext_resource type="Texture2D" uid="uid://bylpmrg7yak7r" path="res://crosshair.png" id="5_iwquq"]
+[ext_resource type="Theme" uid="uid://bt2dwcnmmfacw" path="res://uiTheme.tres" id="5_uwqy6"]
+[ext_resource type="AudioStream" uid="uid://cdj6mvfaddrdt" path="res://Quake_rpg_fire_remastered.wav" id="7_jr8cf"]
+[ext_resource type="Texture2D" uid="uid://epjciyt4vrwq" path="res://hitmarkernonlethal.png" id="8_73r50"]
+[ext_resource type="AudioStream" uid="uid://bpcesmirs8b7t" path="res://hitsound.ogg" id="8_sdjce"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x5jbe"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_pin38"]
+
+[sub_resource type="Theme" id="Theme_yspqb"]
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 50
+Label/font_sizes/font_size = 240
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_786kr"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Head/Camera3D/Sprite3D:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Head/Camera3D/RocketVM:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("Head:rotation")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath("Head/Camera3D:rotation")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("Head/Nametag:text")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath("Head/Camera3D/RocketVM:position")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+
+[sub_resource type="Animation" id="Animation_nt583"]
+length = 0.8
+step = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Head/Camera3D/RocketVM:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Head/Camera3D/RocketVM/AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_j52di"]
+resource_name = "RocketShoot"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Head/Camera3D/RocketVM:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.349066, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Head/Camera3D/RocketVM/AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tjjv8"]
+_data = {
+"RESET": SubResource("Animation_nt583"),
+"RocketShoot": SubResource("Animation_j52di")
+}
+
+[node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51037, 0)
+script = ExtResource("1_mmjxm")
+
+[node name="Body" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_x5jbe")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Body"]
+material_override = ExtResource("2_1yy68")
+mesh = SubResource("CapsuleMesh_pin38")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00465196, 0.8, 0.000170588)
+
+[node name="Nametag" type="Label3D" parent="Head"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.155942)
+fov = 90.0
+
+[node name="Sprite3D" type="Sprite3D" parent="Head/Camera3D"]
+transform = Transform3D(0.155, 0, 0, 0, 0.155, 0, 0, 0, 0.155, 0, -0.30526, -0.41059)
+texture_filter = 2
+texture = ExtResource("3_tm7ya")
+
+[node name="RocketVM" parent="Head/Camera3D" instance=ExtResource("5_4ske5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, -1, -0.6)
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D/RocketVM"]
+transform = Transform3D(1.225, 0, 0, 0, 1.225, 0, 0, 0, 1.225, 0.025, 0.4, 0.574)
+target_position = Vector3(0, 0, -1)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Head/Camera3D/RocketVM"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005218, 0.403943, -0.41525)
+stream = ExtResource("7_jr8cf")
+volume_db = -35.0
+max_distance = 10.0
+
+[node name="Area" type="Area3D" parent="."]
+
+[node name="Model" type="CollisionShape3D" parent="Area"]
+shape = SubResource("CapsuleShape3D_x5jbe")
+
+[node name="ClientUI" type="Node3D" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ClientUI"]
+offset_right = 512.0
+offset_bottom = 256.0
+theme = ExtResource("5_uwqy6")
+
+[node name="ChatBox" type="Label" parent="ClientUI/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_uwqy6")
+
+[node name="InputBox" type="LineEdit" parent="ClientUI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("5_uwqy6")
+placeholder_text = "Press \"/\" to chat"
+context_menu_enabled = false
+
+[node name="SpeedrunTimer" type="Label" parent="ClientUI/VBoxContainer"]
+layout_mode = 2
+
+[node name="WaveInfo" type="Label" parent="ClientUI/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_uwqy6")
+
+[node name="Crosshair" type="TextureRect" parent="ClientUI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 432.0
+offset_bottom = 432.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.2, 0.2)
+mouse_filter = 2
+texture = ExtResource("5_iwquq")
+
+[node name="Hitmarker" type="TextureRect" parent="ClientUI/Crosshair"]
+visible = false
+show_behind_parent = true
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 480.0
+texture = ExtResource("8_73r50")
+
+[node name="SpeedLabel" type="Label" parent="ClientUI/Crosshair"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.833
+anchor_bottom = 0.833
+offset_top = 0.159943
+offset_right = 480.0
+offset_bottom = 437.16
+theme = SubResource("Theme_yspqb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="ClientUI"]
+stream = ExtResource("8_sdjce")
+volume_db = 8.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_786kr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_tjjv8")
+}
+
+[node name="markerTimer" type="Timer" parent="."]
+
+[connection signal="area_entered" from="Area" to="." method="_on_area_area_entered"]
+[connection signal="focus_exited" from="ClientUI/VBoxContainer/InputBox" to="." method="_on_input_box_focus_exited"]
+[connection signal="text_submitted" from="ClientUI/VBoxContainer/InputBox" to="." method="_on_input_box_text_submitted"]
+[connection signal="timeout" from="markerTimer" to="." method="_on_marker_timer_timeout"]

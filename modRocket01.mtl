@@ -1,0 +1,10 @@
+# Made in Blockbench 4.10.4
+newmtl m_fa950019-bcb9-47f6-c494-4b43d8516054
+map_Kd Body.png
+newmtl m_0b1d8a96-f0e7-9470-3743-4a0d6f71edd8
+map_Kd Tip.png
+newmtl m_26e24820-efb8-246b-765f-3294342883fb
+map_Kd Thruster.png
+newmtl m_b62d710e-431e-17dc-8243-85cb22209bf2
+map_Kd Funnel.png
+newmtl none

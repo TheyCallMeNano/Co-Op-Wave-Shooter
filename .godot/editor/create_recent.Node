@@ -1,0 +1,14 @@
+Timer
+TextureRect
+AudioStreamPlayer2D
+Label
+CollisionShape3D
+Area3D
+Node3D
+CSGMesh3D
+MeshInstance3D
+CSGTorus3D
+CSGSphere3D
+NavigationAgent3D
+NavigationRegion3D
+Node

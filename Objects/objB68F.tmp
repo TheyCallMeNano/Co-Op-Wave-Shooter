@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3 uid="uid://c0p1a33c63s7m"]
+
+[ext_resource type="Texture2D" uid="uid://c6t0cwawepn62" path="res://Materials/Purple/texture_05.png" id="1_antu2"]
+[ext_resource type="Script" path="res://Scripts/scrEnemyGeneric.gd" id="1_bfuau"]
+[ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="2_i3say"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_utvf7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oglgy"]
+albedo_texture = ExtResource("1_antu2")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k2s01"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_fau3w"]
+points = PackedVector3Array(-0.364253, -1.95648, 0.185385, 0.369041, 1.95544, 0.185288, 0.369127, 1.9559, -0.18073, 1.96087, -0.366944, -0.0586655, -0.364332, -0.183125, -1.9546, -1.27271, 0.24275, 1.52044, 0.793616, -0.121712, 1.82912, -1.88569, 0.365158, -0.545628, 1.21369, -0.484632, -1.51194, 0.546097, 1.32958, -1.38787, -1.63315, -1.09043, -0.360923, -1.15089, 1.57842, -0.422541, 1.70453, 1.03337, 0.123806, 0.184696, -1.70173, -1.03077, 0.548718, -1.57913, 1.09552, 0.123794, 1.58057, 1.218, -0.841348, -1.08496, 1.44904, 1.21822, -1.58084, -0.119215, -1.20531, 1.44936, 0.666261, -1.21069, 0.485271, -1.51393, -1.88551, -0.243416, 0.611221, 1.63951, -0.484819, 1.03311, 1.26675, 0.963423, 1.20639, -1.20528, -0.966215, -1.26581, 1.63206, 0.84495, -0.782135, -0.180451, 0.61019, 1.89404, -0.30131, 1.33581, -1.45526, 0.669484, 0.485467, -1.81791, -0.180451, -0.610189, 1.89404, -1.38787, -1.32958, 0.546097, 0.185124, -0.791984, -1.82518, -0.906311, -1.69615, -0.542715)
+
+[node name="ObjEnemyGeneric" type="CharacterBody3D" groups=["bodies", "enemies"]]
+script = ExtResource("1_bfuau")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_utvf7")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CollisionShape3D"]
+material = SubResource("StandardMaterial3D_oglgy")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.541638, 0.472633, 0)
+flip_v = true
+pixel_size = 0.003
+texture = ExtResource("2_i3say")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_k2s01")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+debug_enabled = true
+
+[node name="Sightline" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sightline"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_fau3w")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[connection signal="area_entered" from="Sightline" to="." method="_on_sightline_area_entered"]
+[connection signal="body_entered" from="Sightline" to="." method="_on_sightline_body_entered"]
+[connection signal="body_exited" from="Sightline" to="." method="_on_sightline_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

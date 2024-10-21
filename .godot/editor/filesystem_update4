@@ -1,0 +1,10 @@
+res://Rooms/Base.tscn
+res://Materials/PlayerMat.tres
+res://uiTheme.tres
+res://Viewmodel.gdshader
+res://Objects/objPlayer.tscn
+res://Objects/objRocket.tscn
+res://Objects/objBall.tscn
+res://Objects/objEnemyGeneric.tscn
+res://Scripts/scrEnemyGeneric.gd
+res://Scripts/scrRoomController.gd

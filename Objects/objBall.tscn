@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://bgym2byp0grhj"]
+
+[ext_resource type="Script" path="res://Scripts/scrRigidBodyManager.gd" id="1_rjflk"]
+[ext_resource type="AudioStream" uid="uid://cd8igu1udw4te" path="res://basketball-2-103714.mp3" id="2_ahrpk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bbpod"]
+albedo_color = Color(0.174093, 5.77569e-07, 0.883045, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_4nqm4"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_yvcnf"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Ball" type="RigidBody3D" groups=["bodies"]]
+freeze_mode = 1
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_rjflk")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+material = SubResource("StandardMaterial3D_bbpod")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_4nqm4")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_yvcnf")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_ahrpk")
+volume_db = 20.0
+pitch_scale = 1.2
+max_distance = 30.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
