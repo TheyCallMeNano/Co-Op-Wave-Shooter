@@ -6,16 +6,15 @@ extends CharacterBody3D
 @onready var head = $Head
 @onready var rocket = preload("res://Objects/objRocket.tscn")
 @onready var ray = $Head/Camera3D/RocketVM/RayCast3D
-@onready var inputBox = $ClientUI/VBoxContainer/InputBox
-@onready var UI = $ClientUI
-@onready var UIAudio = $ClientUI/AudioStreamPlayer2D
+@onready var inputBox = $InfoCorner/InputBox
+@onready var UIAudio = $AudioStreamPlayer2D
 @onready var enemy = preload("res://Objects/objEnemyGeneric.tscn")
 @onready var timer = $markerTimer
-@onready var hitMarker = $ClientUI/Crosshair/Hitmarker
+@onready var hitMarker = $Crosshair/Hitmarker
+@onready var infoCorner = $InfoCorner
+@onready var crosshair = $Crosshair
 
 # Consts
-const WALK_SPEED = 5.0
-const SPRINT_SPEED = 10.0
 const BOB_FREQ = 2.0
 const BOB_AMP = 0.08
 
@@ -55,8 +54,6 @@ var username = ""
 var start_time: int = 0
 var elapsed_time: int = 0
 var speedrunning: int = 0
-
-# Misc
 var chatArray = []
 var chatting = false
 var tBob = 0.0
@@ -135,41 +132,33 @@ func _ready() -> void:
 	camera.current = is_multiplayer_authority()
 	if is_multiplayer_authority():
 		globals.clientObj.append(self)
-		UI.visible = true
 		$Head/Nametag.text = username
 		$Head/Camera3D/Sprite3D.visible = false
+		crosshair.visible = true
+		infoCorner.visible = true
 
-func setOldUsernames():
-	print("Iterating " + str(get_multiplayer_authority()))
-	print(globals.clientObj.size())
-	for i in globals.clientObj.size():
-		print("Set name " + str(globals.clientObj[i].username) + " to player " + str(globals.clientObj[i]))
-		globals.clientObj[i].get_child(1).get_child(0).text = globals.clientObj[i].username
-
+@warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
-	$ClientUI/VBoxContainer/WaveInfo.text = "Wave: " + str(globals.waveNum) + " of " + str(globals.waveNumMax) + "\nThere are: " + str(globals.eAlive) + " enemies alive.\nOnion Ring at: " + str(globals.objHP)
-
-
-func _physics_process(delta):
 	if is_multiplayer_authority():
-		$ClientUI/Crosshair/SpeedLabel.text = str( int( ( velocity * Vector3(1, 0, 1) ).length() ) )
+		$InfoCorner/WaveInfo.text = "Wave: " + str(globals.waveNum) + " of " + str(globals.waveNumMax) + "\nThere are: " + str(globals.eAlive) + " enemies alive.\nOnion Ring at: " + str(globals.objHP)
+		$Crosshair/SpeedLabel.text = str( int( ( velocity * Vector3(1, 0, 1) ).length() ) )
 		if globals.chatLog.size() < 5 && chatArray != globals.chatLog:
 			for i in globals.chatLog.size():
 				if chatArray.size() != globals.chatLog.size():
 					chatArray.resize(globals.chatLog.size()+1)
 				if globals.chatLog[i] != chatArray[i]:
 					chatArray[i] = globals.chatLog[i]
-					$ClientUI/VBoxContainer/ChatBox.text += globals.chatLog[i]
+					$InfoCorner/ChatBox.text += globals.chatLog[i]
 		elif globals.chatLog.size() > 5 && chatArray != globals.chatLog:
 			globals.chatLog.pop_front()
-			$ClientUI/VBoxContainer/ChatBox.text = ""
+			$InfoCorner/ChatBox.text = ""
 			for i in globals.chatLog.size():
 				if chatArray.size() != globals.chatLog.size():
 					chatArray.resize(globals.chatLog.size()+1)
 				if globals.chatLog[i] != chatArray[i]:
 					chatArray[i] = globals.chatLog[i]
-					$ClientUI/VBoxContainer/ChatBox.text += globals.chatLog[i]
-		
+					$InfoCorner/ChatBox.text += globals.chatLog[i]
+					
 		if chatting == false:
 			if Input.is_action_just_pressed("chat") && chatting != true:
 				chatActive()
@@ -180,7 +169,14 @@ func _physics_process(delta):
 			if Input.is_action_pressed("primaryFire") && !$AnimationPlayer.is_playing():
 				$AnimationPlayer.queue("RocketShoot")
 				handleSpawning(rocket)
-			
+		
+		if speedrunning == 1:
+			$InfoCorner/SpeedrunTimer.text = get_elapsed_time()
+
+
+func _physics_process(delta):
+	if is_multiplayer_authority():
+		if chatting == false:
 			var inputDir = Input.get_vector("Left", "Right", "Forward", "Backward")
 			wishDir = (head.transform.basis * Vector3(inputDir.x, 0, inputDir.y)).normalized()
 			projectedSpeed = (velocity * Vector3(1,0,1)).dot(wishDir)
@@ -201,32 +197,67 @@ func _physics_process(delta):
 		
 		move_and_slide()
 		
-		if speedrunning == 1:
-			$ClientUI/VBoxContainer/SpeedrunTimer.text = get_elapsed_time()
-		
 		for i in get_slide_collision_count():
 			var c = get_slide_collision(i)
 			if c.get_collider() is RigidBody3D:
 				c.get_collider().apply_central_impulse(-c.get_normal() * push)
 		rpc("remoteSetPos", global_position, head.rotation, camera.rotation)
 
-@warning_ignore("unused_parameter")
-func clipVelocity(normal: Vector3, overBounce: float, delta) -> void:
-	var correctionAmt = 0.0
-	var correctionDir = Vector3.ZERO
-	var moveDir : Vector3 = get_velocity().normalized()
-	
-	correctionAmt = moveDir.dot(normal) * overBounce
-	
-	correctionDir = normal * correctionAmt
-	velocity -= correctionDir
-	# Below works well if on high globals.gravity
-	velocity.y -= correctionDir.y * (globals.gravity/20)
+func _on_input_box_focus_exited() -> void:
+	chatting = false
 
+func _on_area_area_entered(area: Area3D) -> void:
+	if area.name == "parkourStart":
+		start_stopwatch()
+	elif area.name == "parkourFinish":
+		stop_stopwatch()
+
+func _on_marker_timer_timeout() -> void:
+	hitMarker.visible = false
+
+func _on_input_box_text_submitted(new_text: String) -> void:
+	if new_text.begins_with("/"):
+		var cText = new_text.substr(1)
+		commandParser(cText)
+		chatting = false
+	else:
+		globals.chatLog.append(username + ": " + new_text + "\n")
+		rpc("syncChat", username + ": " + new_text + "\n")
+	chatting = false
+	inputBox.release_focus()
+	inputBox.text = ""
+
+func _unhandled_input(event: InputEvent):
+	if is_multiplayer_authority():
+		if event is InputEventMouseMotion:
+			head.rotate_y(-event.relative.x * lookAroundSpeed)
+			camera.rotate_x(-event.relative.y * lookAroundSpeed)
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
+func commandParser(command: String):
+	# Define a dictionary where the key is the command and the value is a Callable (function reference) that modifies the respective variable
+	
+	# Iterate through the dictionary keys to find the command in the input
+	for i in commandDictionary.keys():
+		if command.begins_with(i):
+			# Erase the command part from the string, leaving only the value
+			var cmd = command.erase(0, i.length()+1)
+			var value = cmd # Erases the command part (e.g., "push ") from the input string
+			
+			# Call the corresponding function using .call()
+			commandDictionary[i].call(value)
+			break
+
+func setOldUsernames():
+	print("Iterating " + str(get_multiplayer_authority()))
+	print(globals.clientObj.size())
+	for i in globals.clientObj.size():
+		print("Set name " + str(globals.clientObj[i].username) + " to player " + str(globals.clientObj[i]))
+		globals.clientObj[i].get_child(1).get_child(0).text = globals.clientObj[i].username
 
 func start_stopwatch() -> void:
 	if speedrunning == 0:
-		$ClientUI/VBoxContainer/SpeedrunTimer.visible = true
+		$InfoCorner/SpeedrunTimer.visible = true
 		speedrunning = 1
 	start_time = Time.get_ticks_msec()
 
@@ -247,6 +278,20 @@ func get_elapsed_time() -> String:
 	var milliseconds: int = time_in_ms % 1000
 	
 	return "%02d:%02d.%03d" % [minutes, seconds, milliseconds]
+
+#region Movement
+@warning_ignore("unused_parameter")
+func clipVelocity(normal: Vector3, overBounce: float, delta) -> void:
+	var correctionAmt = 0.0
+	var correctionDir = Vector3.ZERO
+	var moveDir : Vector3 = get_velocity().normalized()
+	
+	correctionAmt = moveDir.dot(normal) * overBounce
+	
+	correctionDir = normal * correctionAmt
+	velocity -= correctionDir
+	# Below works well if on high globals.gravity
+	velocity.y -= correctionDir.y * (globals.gravity/20)
 
 func applyFriction(delta):
 	var speedScalar = 0.0
@@ -303,26 +348,9 @@ func groundMove(delta):
 	
 	if is_on_wall():
 		clipVelocity(get_wall_normal(), 1, delta)
+#endregion
 
-
-@rpc("unreliable")
-func remoteSetPos(authorityPosition, headRot, camRot):
-	global_position = authorityPosition
-	head.rotation = headRot
-	camera.rotation = camRot
-
-@rpc("reliable")
-func spawnBallsRemote(r, g, b):
-	spawnBall(r, g, b)
-
-@rpc("reliable")
-func spawnRocketRemote(rot):
-	spawnRocket(rot)
-
-@rpc("reliable")
-func spawnEnemyRemote():
-	spawnEnemy()
-
+#region Spawn Management
 func spawnEnemy():
 	var enemyInst = enemy.instantiate()
 	var ray_data = self.getMouseRay()
@@ -363,6 +391,23 @@ func spawnBall(red, green, blue):
 		ballInst.call_deferred("set_position", ray_target)
 	ballInst.get_child(0).material_override = randomColor
 
+func handleSpawning(obj):
+	if obj == ball:
+		var r = randf_range(0.01, 1.0)
+		var g = randf_range(0.01, 1.0)
+		var b = randf_range(0.01, 1.0)
+		spawnBall(r,g,b)
+		rpc("spawnBallsRemote", r, g, b)
+	
+	elif obj == rocket:
+		var rot = $Head/Camera3D.rotation + $Head.rotation
+		spawnRocket(rot)
+		rpc("spawnRocketRemote", rot)
+	
+	elif obj == enemy:
+		spawnEnemy()
+#endregion
+
 func getMouseRay() -> Dictionary:
 	var mousePos = get_viewport().get_mouse_position()
 	var rayOrigin = camera.project_ray_origin(mousePos)
@@ -389,72 +434,30 @@ func headbob(time) -> Vector3:
 	pos.x = cos(time * BOB_FREQ / 2) * BOB_AMP
 	return pos
 
-func _unhandled_input(event: InputEvent):
-	if is_multiplayer_authority():
-		if event is InputEventMouseMotion:
-			head.rotate_y(-event.relative.x * lookAroundSpeed)
-			camera.rotate_x(-event.relative.y * lookAroundSpeed)
-			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
-
-
-func handleSpawning(obj):
-	if obj == ball:
-		var r = randf_range(0.01, 1.0)
-		var g = randf_range(0.01, 1.0)
-		var b = randf_range(0.01, 1.0)
-		spawnBall(r,g,b)
-		rpc("spawnBallsRemote", r, g, b)
-	
-	elif obj == rocket:
-		var rot = $Head/Camera3D.rotation + $Head.rotation
-		spawnRocket(rot)
-		rpc("spawnRocketRemote", rot)
-	
-	elif obj == enemy:
-		spawnEnemy()
-
 func chatActive() -> void:
 	chatting = true
 	inputBox.grab_focus()
 
+#region RPC Calls
 @rpc()
 func syncChat(msg):
 	globals.chatLog.append(msg)
 
-func _on_input_box_text_submitted(new_text: String) -> void:
-	if new_text.begins_with("/"):
-		var cText = new_text.substr(1)
-		commandParser(cText)
-		chatting = false
-	else:
-		globals.chatLog.append(username + ": " + new_text + "\n")
-		rpc("syncChat", username + ": " + new_text + "\n")
-	chatting = false
-	inputBox.release_focus()
-	inputBox.text = ""
+@rpc("unreliable")
+func remoteSetPos(authorityPosition, headRot, camRot):
+	global_position = authorityPosition
+	head.rotation = headRot
+	camera.rotation = camRot
 
-func commandParser(command: String):
-	# Define a dictionary where the key is the command and the value is a Callable (function reference) that modifies the respective variable
-	
-	# Iterate through the dictionary keys to find the command in the input
-	for i in commandDictionary.keys():
-		if command.begins_with(i):
-			# Erase the command part from the string, leaving only the value
-			var cmd = command.erase(0, i.length()+1)
-			var value = cmd # Erases the command part (e.g., "push ") from the input string
-			
-			# Call the corresponding function using .call()
-			commandDictionary[i].call(value)
-			break
+@rpc("reliable")
+func spawnBallsRemote(r, g, b):
+	spawnBall(r, g, b)
 
-func _on_input_box_focus_exited() -> void:
-	chatting = false
+@rpc("reliable")
+func spawnRocketRemote(rot):
+	spawnRocket(rot)
 
-func _on_area_area_entered(area: Area3D) -> void:
-	if area.name == "parkourStart":
-		start_stopwatch()
-	elif area.name == "parkourFinish":
-		stop_stopwatch()
-
-func _on_marker_timer_timeout() -> void:
-	hitMarker.visible = false
+@rpc("reliable")
+func spawnEnemyRemote():
+	spawnEnemy()
+#endregion

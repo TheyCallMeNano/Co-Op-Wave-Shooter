@@ -16,7 +16,7 @@ properties/0/replication_mode = 1
 [node name="Ball" type="RigidBody3D" groups=["bodies"]]
 freeze_mode = 1
 contact_monitor = true
-max_contacts_reported = 2
+max_contacts_reported = 1
 script = ExtResource("1_rjflk")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="."]

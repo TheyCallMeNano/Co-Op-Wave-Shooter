@@ -151,32 +151,32 @@ max_distance = 10.0
 [node name="Model" type="CollisionShape3D" parent="Area"]
 shape = SubResource("CapsuleShape3D_x5jbe")
 
-[node name="ClientUI" type="Node3D" parent="."]
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ClientUI"]
+[node name="InfoCorner" type="VBoxContainer" parent="."]
+visible = false
 offset_right = 512.0
 offset_bottom = 256.0
 theme = ExtResource("5_uwqy6")
 
-[node name="ChatBox" type="Label" parent="ClientUI/VBoxContainer"]
+[node name="ChatBox" type="Label" parent="InfoCorner"]
 layout_mode = 2
 theme = ExtResource("5_uwqy6")
 
-[node name="InputBox" type="LineEdit" parent="ClientUI/VBoxContainer"]
+[node name="InputBox" type="LineEdit" parent="InfoCorner"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("5_uwqy6")
 placeholder_text = "Press \"/\" to chat"
 context_menu_enabled = false
 
-[node name="SpeedrunTimer" type="Label" parent="ClientUI/VBoxContainer"]
+[node name="SpeedrunTimer" type="Label" parent="InfoCorner"]
 layout_mode = 2
 
-[node name="WaveInfo" type="Label" parent="ClientUI/VBoxContainer"]
+[node name="WaveInfo" type="Label" parent="InfoCorner"]
 layout_mode = 2
 theme = ExtResource("5_uwqy6")
 
-[node name="Crosshair" type="TextureRect" parent="ClientUI"]
+[node name="Crosshair" type="TextureRect" parent="."]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -192,7 +192,7 @@ scale = Vector2(0.2, 0.2)
 mouse_filter = 2
 texture = ExtResource("5_iwquq")
 
-[node name="Hitmarker" type="TextureRect" parent="ClientUI/Crosshair"]
+[node name="Hitmarker" type="TextureRect" parent="Crosshair"]
 visible = false
 show_behind_parent = true
 layout_mode = 0
@@ -200,7 +200,7 @@ offset_right = 480.0
 offset_bottom = 480.0
 texture = ExtResource("8_73r50")
 
-[node name="SpeedLabel" type="Label" parent="ClientUI/Crosshair"]
+[node name="SpeedLabel" type="Label" parent="Crosshair"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.833
@@ -212,9 +212,8 @@ theme = SubResource("Theme_yspqb")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="ClientUI"]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_sdjce")
-volume_db = 8.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_786kr")
@@ -227,6 +226,6 @@ libraries = {
 [node name="markerTimer" type="Timer" parent="."]
 
 [connection signal="area_entered" from="Area" to="." method="_on_area_area_entered"]
-[connection signal="focus_exited" from="ClientUI/VBoxContainer/InputBox" to="." method="_on_input_box_focus_exited"]
-[connection signal="text_submitted" from="ClientUI/VBoxContainer/InputBox" to="." method="_on_input_box_text_submitted"]
+[connection signal="focus_exited" from="InfoCorner/InputBox" to="." method="_on_input_box_focus_exited"]
+[connection signal="text_submitted" from="InfoCorner/InputBox" to="." method="_on_input_box_text_submitted"]
 [connection signal="timeout" from="markerTimer" to="." method="_on_marker_timer_timeout"]
