@@ -44,6 +44,12 @@ properties/6/replication_mode = 1
 properties/7/path = NodePath("Head/Camera3D/RocketVM:position")
 properties/7/spawn = true
 properties/7/replication_mode = 1
+properties/8/path = NodePath("Body:disabled")
+properties/8/spawn = true
+properties/8/replication_mode = 1
+properties/9/path = NodePath(".:visible")
+properties/9/spawn = true
+properties/9/replication_mode = 1
 
 [sub_resource type="Animation" id="Animation_nt583"]
 length = 0.8

@@ -1,11 +1,38 @@
 extends Node3D
 
-var peer = ENetMultiplayerPeer.new()
+@onready var peer = ENetMultiplayerPeer.new()
 @export var playerScene: PackedScene
-const port = 135
-const address = "10.5.25.42"
+var port = 135
+var address = "137.184.94.3"
 
 var player_nodes = {}  # Store a mapping between peerID and player nodes
+
+func _ready() -> void:
+	for arg in OS.get_cmdline_args():
+		if arg.contains("--server"):
+			$Control/Menu.visible = false
+			peer.create_server(port)
+			multiplayer.multiplayer_peer = peer
+			addPlayer(1)
+			
+			multiplayer.peer_connected.connect(
+				func(newPeerID):
+					rpc_id(newPeerID, "addPreviousPlayers", globals.connectedIDs)
+					rpc("addNewPlayer", newPeerID)
+					addPlayer(newPeerID)
+					globals.chatLog.append("Player " + $Control/Menu/Namefield.text + " has connected\n")
+					print("Player " + $Control/Menu/Namefield.text + " has connected")
+			)
+			
+			peer.peer_disconnected.connect(
+				func(peerID):
+					await get_tree().create_timer(1).timeout
+					if player_nodes.has(peerID):
+						player_nodes[peerID].queue_free()  # Free the player node by peerID reference
+						player_nodes.erase(peerID)  # Remove the player node reference
+					print("Player " + str(peerID) + " has disconnected")
+					globals.chatLog.append("Player " + str(peerID) + " has disconnected\n")
+			)
 
 func addPlayer(peerID):
 	globals.connectedIDs.append(peerID)
@@ -33,7 +60,7 @@ func _on_host_pressed() -> void:
 	multiplayer.multiplayer_peer = peer
 	addPlayer(1)
 	
-	multiplayer.peer_connected.connect(
+	peer.peer_connected.connect(
 		func(newPeerID):
 			rpc_id(newPeerID, "addPreviousPlayers", globals.connectedIDs)
 			rpc("addNewPlayer", newPeerID)
@@ -54,5 +81,8 @@ func _on_host_pressed() -> void:
 
 func _on_join_pressed() -> void:
 	$Control/Menu.visible = false
+	if $Control/Menu/Port.text != "" && $"Control/Menu/IP Adderess".text != "":
+		port = $Control/Menu/Port.text.to_int()
+		address = $"Control/Menu/IP Adderess".text
 	peer.create_client(address, port)
 	multiplayer.multiplayer_peer = peer

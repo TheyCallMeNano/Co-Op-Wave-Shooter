@@ -57,6 +57,7 @@ var speedrunning: int = 0
 var chatArray = []
 var chatting = false
 var tBob = 0.0
+var isServer = false
 
 var commandDictionary = {
 	"jumpVelocity": func(val):
@@ -79,7 +80,6 @@ var commandDictionary = {
 				var itm = val.erase(0, i.length()+1)
 				var amnt = itm.to_int()
 				globals.chatLog.append("Spawning in " + str(amnt) + " " + val + "\n")
-				rpc("syncChat", "Spawning in " + str(amnt) + " " + val + "\n")
 				
 				for j in amnt:
 					handleSpawning(spawnables[i]),
@@ -126,16 +126,25 @@ var commandDictionary = {
 }
 
 func _ready() -> void:
-	setOldUsernames()
-	print(commandDictionary.keys())
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	camera.current = is_multiplayer_authority()
+	for arg in OS.get_cmdline_args():
+		if arg.contains("--server"):
+			isServer = true
+		
 	if is_multiplayer_authority():
 		globals.clientObj.append(self)
-		$Head/Nametag.text = username
 		$Head/Camera3D/Sprite3D.visible = false
-		crosshair.visible = true
 		infoCorner.visible = true
+		if isServer == false:
+			crosshair.visible = true
+			$Head/Nametag.text = username
+			setOldUsernames()
+			print(commandDictionary.keys())
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			camera.current = is_multiplayer_authority()
+		else:
+			self.visible = false
+			$Body.disabled = true
+			UIAudio.visible = false
 
 @warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
@@ -159,7 +168,7 @@ func _process(delta: float) -> void:
 					chatArray[i] = globals.chatLog[i]
 					$InfoCorner/ChatBox.text += globals.chatLog[i]
 					
-		if chatting == false:
+		if chatting == false && isServer == false:
 			if Input.is_action_just_pressed("chat") && chatting != true:
 				chatActive()
 			
@@ -175,7 +184,7 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta):
-	if is_multiplayer_authority():
+	if is_multiplayer_authority() && isServer == false:
 		if chatting == false:
 			var inputDir = Input.get_vector("Left", "Right", "Forward", "Backward")
 			wishDir = (head.transform.basis * Vector3(inputDir.x, 0, inputDir.y)).normalized()
@@ -228,7 +237,7 @@ func _on_input_box_text_submitted(new_text: String) -> void:
 	inputBox.text = ""
 
 func _unhandled_input(event: InputEvent):
-	if is_multiplayer_authority():
+	if is_multiplayer_authority() && isServer == false:
 		if event is InputEventMouseMotion:
 			head.rotate_y(-event.relative.x * lookAroundSpeed)
 			camera.rotate_x(-event.relative.y * lookAroundSpeed)
@@ -439,10 +448,6 @@ func chatActive() -> void:
 	inputBox.grab_focus()
 
 #region RPC Calls
-@rpc()
-func syncChat(msg):
-	globals.chatLog.append(msg)
-
 @rpc("unreliable")
 func remoteSetPos(authorityPosition, headRot, camRot):
 	global_position = authorityPosition

@@ -1,3 +1,5 @@
+AnimationPlayer
+AnimationTree
 MultiplayerSynchronizer
 Timer
 TextureRect
@@ -11,5 +13,3 @@ MeshInstance3D
 CSGTorus3D
 CSGSphere3D
 NavigationAgent3D
-NavigationRegion3D
-Node

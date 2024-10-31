@@ -5,7 +5,8 @@ extends Node3D
 @onready var children = get_children()
 @onready var childrenAmt = get_child_count()
 
-
+# URGENT: 2 options for wave syncing force players to reset and start waves themelves
+# or use the synced info upon update to get updated spawns
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if globals.waveNum == 0 && globals.waveNumMax == 0:
@@ -17,6 +18,7 @@ func _ready() -> void:
 		globals.eMax = spawnAmt
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+@warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
 	if globals.eAlive == 0 && globals.waveNum != globals.waveNumMax:
 		globals.waveNum += 1

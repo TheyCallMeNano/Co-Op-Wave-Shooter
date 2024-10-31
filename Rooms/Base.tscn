@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://bbhrgy4awbqj"]
+[gd_scene load_steps=48 format=3 uid="uid://bbhrgy4awbqj"]
 
 [ext_resource type="PackedScene" uid="uid://dfvwlanihtgh7" path="res://Objects/objPlayer.tscn" id="1_4eee5"]
 [ext_resource type="Script" path="res://Scripts/scrRoomController.gd" id="1_pf405"]
@@ -146,6 +146,35 @@ size = Vector3(1024, 0.1, 1024)
 properties/0/path = NodePath(".:chatLog")
 properties/0/spawn = true
 properties/0/replication_mode = 1
+properties/1/path = NodePath(".:connectedIDs")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:clientObj")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:gravity")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:waveNum")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:waveNumMax")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath(".:eAlive")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath(".:eMax")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+properties/8/path = NodePath(".:objHP")
+properties/8/spawn = true
+properties/8/replication_mode = 1
+properties/9/path = NodePath(".:difficulty")
+properties/9/spawn = true
+properties/9/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jmqt8"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_pf405")
@@ -176,6 +205,18 @@ text = "Join"
 layout_mode = 2
 theme = ExtResource("3_inl5u")
 placeholder_text = "Enter Name"
+alignment = 1
+
+[node name="IP Adderess" type="LineEdit" parent="Control/Menu"]
+layout_mode = 2
+theme = ExtResource("3_inl5u")
+placeholder_text = "Enter IP"
+alignment = 1
+
+[node name="Port" type="LineEdit" parent="Control/Menu"]
+layout_mode = 2
+theme = ExtResource("3_inl5u")
+placeholder_text = "Enter Port"
 alignment = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -819,9 +860,13 @@ shape = SubResource("BoxShape3D_0m7qq")
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 spawn_path = NodePath("..")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="GlobalSync" type="MultiplayerSynchronizer" parent="."]
+editor_description = "IGNORE WARNING IN EDITOR -- ONLY GLOBAL VARS ACCEPTED"
 root_path = NodePath("/root/globals")
 replication_config = SubResource("SceneReplicationConfig_3urgv")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_jmqt8")
 
 [connection signal="pressed" from="Control/Menu/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Control/Menu/Join" to="." method="_on_join_pressed"]

@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1729663725
+::res://::1730350476
 basketball-2-103714.mp3::AudioStreamMP3::5052029906435367006::1727385591::1727385602::1::::<><>::
 crosshair.png::CompressedTexture2D::4094594174370688761::1729478729::1729478748::1::::<><>::
 export_presets.cfg::TextFile::-1::1729482676::0::1::::<><>::
@@ -9,11 +9,12 @@ hitmarkernonlethal.png::CompressedTexture2D::312271523550713880::1729478952::172
 hitsound.ogg::AudioStreamOggVorbis::3443657749469452959::1728973331::1728973341::1::::<><>::
 icon.svg::CompressedTexture2D::421490226904326749::1712975264::1712975276::1::::<><>::
 killsound.ogg::AudioStreamOggVorbis::1552310076225278342::1728973373::1728973418::1::::<><>::
+playerModel.tscn::PackedScene::820540434182907542::1730244013::0::1::::<><>::uid://byiis006sysj0::::res://Models/Player/Hazmat/Hazmat_Character.fbx
 Quake_rpg_fire_remastered.wav::AudioStreamWAV::5003892065107978181::1727385131::1727385134::1::::<><>::
-uiTheme.tres::Theme::3775968476310152834::1729490148::0::1::::<><>::
-Viewmodel.gdshader::Shader::-1::1729491794::0::1::::<><>::
-::res://Materials/::1729490148
-PlayerMat.tres::StandardMaterial3D::2565035911781719784::1729490148::0::1::::<><>::
+uiTheme.tres::Theme::3775968476310152834::1730242615::0::1::::<><>::
+Viewmodel.gdshader::Shader::-1::1730244017::0::1::::<><>::
+::res://Materials/::1730242615
+PlayerMat.tres::StandardMaterial3D::2565035911781719784::1730242615::0::1::::<><>::
 ::res://Materials/Dark/::1728444715
 texture_01.png::CompressedTexture2D::1982818562618180022::1586304798::1728104284::1::::<><>::
 texture_02.png::CompressedTexture2D::8710034819260630476::1586304799::1728104255::1::::<><>::
@@ -98,9 +99,13 @@ texture_10.png::CompressedTexture2D::5572834096202254323::1586304881::1728447388
 texture_11.png::CompressedTexture2D::8719645559194985214::1586304883::1728447416::1::::<><>::
 texture_12.png::CompressedTexture2D::6715356093878603978::1586304885::1728104254::1::::<><>::
 texture_13.png::CompressedTexture2D::8504005436505338777::1586304886::1728104254::1::::<><>::
-::res://Models/::1728106028
-::res://Models/Map/::1728110681
-fps map low poly.glb::PackedScene::6325214013997872003::1728110642::1728110681::1::::<><>::
+::res://Models/::1729723184
+::res://Models/Player/::1730242723
+::res://Models/Player/Hazmat/::1730242942
+Hazmat_Character.blend::PackedScene::5152103553369126988::1717789350::1730242485::1::::<><>::uid://fxn1gqjt4hgy::::res://Models/Player/Hazmat/Hazmet_Tex.png
+Hazmat_Character.fbx::PackedScene::4087987186408156947::1717789379::1730242485::1::::<><>::uid://fxn1gqjt4hgy::::res://Models/Player/Hazmat/Hazmet_Tex.png
+Hazmet_Tex.png::CompressedTexture2D::399260998373456952::1717785190::1730350481::1::::<><>::
+Rifle Run.fbx::PackedScene::2261467163476992368::1730242718::1730350481::1::::<><>::uid://fxn1gqjt4hgy::::res://Models/Player/Hazmat/Hazmet_Tex.png
 ::res://Models/Rocket/::1727379154
 modRocket01.gltf::PackedScene::8282294594705898007::1726947508::1727379154::1::::<><>::
 modRocket01_0.png::CompressedTexture2D::2639728860709335284::1726947510::1727379154::1::::<><>::
@@ -111,19 +116,19 @@ modRocket01_3.png::CompressedTexture2D::6422823990943490688::1726947510::1727379
 modRocketLauncher01.gltf::PackedScene::7110715279781177912::1726947722::1727379167::1::::<><>::
 modRocketLauncher01_0.png::CompressedTexture2D::1924302535909951964::1726947723::1727379166::1::::<><>::
 modRocketLauncher01_1.png::CompressedTexture2D::14636997066415911::1726947723::1727379166::1::::<><>::
-::res://Objects/::1729491480
-objBall.tscn::PackedScene::2857875722281211355::1729491480::0::1::::<><>::res://Scripts/scrRigidBodyManager.gd<>uid://cd8igu1udw4te::::res://basketball-2-103714.mp3
-objEnemyGeneric.tscn::PackedScene::6560108280501583780::1729491480::0::1::::<><>::uid://c6t0cwawepn62::::res://Materials/Purple/texture_05.png<>res://Scripts/scrEnemyGeneric.gd<>uid://coqwimjmi8yq2::::res://face.png
-objPlayer.tscn::PackedScene::7554913640134585582::1729491480::0::1::::<><>::res://Scripts/scrPlayer.gd<>uid://bcsr1ck18tigu::::res://Materials/PlayerMat.tres<>uid://coqwimjmi8yq2::::res://face.png<>uid://c8kqpaxkqf8tg::::res://Models/Rocket Launcher/modRocketLauncher01.gltf<>uid://bylpmrg7yak7r::::res://crosshair.png<>uid://bt2dwcnmmfacw::::res://uiTheme.tres<>uid://cdj6mvfaddrdt::::res://Quake_rpg_fire_remastered.wav<>uid://epjciyt4vrwq::::res://hitmarkernonlethal.png<>uid://bpcesmirs8b7t::::res://hitsound.ogg
-objRocket.tscn::PackedScene::5805034394485165933::1729491480::0::1::::<><>::res://Scripts/scrRocket.gd<>uid://dqaaggkbp0864::::res://Models/Rocket/modRocket01.gltf
-::res://Rooms/::1729491480
-Base.tscn::PackedScene::72708952371741181::1729491480::0::1::::<><>::uid://dfvwlanihtgh7::::res://Objects/objPlayer.tscn<>res://Scripts/scrRoomController.gd<>uid://bt2dwcnmmfacw::::res://uiTheme.tres<>uid://b7vcv3ud3exd1::::res://Materials/Light/texture_02.png<>res://Scripts/scrBoundry.gd<>uid://c2e7wtakclrur::::res://Materials/Green/texture_09.png<>uid://cm75b23lsmnh8::::res://Materials/Green/texture_10.png<>uid://bgxbf3lmgjb1i::::res://Materials/Red/texture_03.png<>uid://dl8pex0o8xg7u::::res://Materials/Light/texture_08.png<>uid://wsonw6heg346::::res://Materials/Dark/texture_04.png<>uid://cfyq11pbkk3ow::::res://Materials/Orange/texture_09.png<>res://Scripts/scrWaveManager.gd<>uid://x2pmxdix8mta::::res://Materials/Orange/texture_02.png<>uid://clnr07phywjs2::::res://Materials/Red/texture_10.png
-::res://Scripts/::1729491254
+::res://Objects/::1729724231
+objBall.tscn::PackedScene::2857875722281211355::1729672985::0::1::::<><>::res://Scripts/scrRigidBodyManager.gd<>uid://cd8igu1udw4te::::res://basketball-2-103714.mp3
+objEnemyGeneric.tscn::PackedScene::6560108280501583780::1729672985::0::1::::<><>::uid://c6t0cwawepn62::::res://Materials/Purple/texture_05.png<>res://Scripts/scrEnemyGeneric.gd<>uid://coqwimjmi8yq2::::res://face.png
+objPlayer.tscn::PackedScene::7554913640134585582::1729724231::0::1::::<><>::res://Scripts/scrPlayer.gd<>uid://bcsr1ck18tigu::::res://Materials/PlayerMat.tres<>uid://coqwimjmi8yq2::::res://face.png<>uid://c8kqpaxkqf8tg::::res://Models/Rocket Launcher/modRocketLauncher01.gltf<>uid://bylpmrg7yak7r::::res://crosshair.png<>uid://bt2dwcnmmfacw::::res://uiTheme.tres<>uid://cdj6mvfaddrdt::::res://Quake_rpg_fire_remastered.wav<>uid://epjciyt4vrwq::::res://hitmarkernonlethal.png<>uid://bpcesmirs8b7t::::res://hitsound.ogg
+objRocket.tscn::PackedScene::5805034394485165933::1729672985::0::1::::<><>::res://Scripts/scrRocket.gd<>uid://dqaaggkbp0864::::res://Models/Rocket/modRocket01.gltf
+::res://Rooms/::1729673199
+Base.tscn::PackedScene::72708952371741181::1729673199::0::1::::<><>::uid://dfvwlanihtgh7::::res://Objects/objPlayer.tscn<>res://Scripts/scrRoomController.gd<>uid://bt2dwcnmmfacw::::res://uiTheme.tres<>uid://b7vcv3ud3exd1::::res://Materials/Light/texture_02.png<>res://Scripts/scrBoundry.gd<>uid://c2e7wtakclrur::::res://Materials/Green/texture_09.png<>uid://cm75b23lsmnh8::::res://Materials/Green/texture_10.png<>uid://bgxbf3lmgjb1i::::res://Materials/Red/texture_03.png<>uid://dl8pex0o8xg7u::::res://Materials/Light/texture_08.png<>uid://wsonw6heg346::::res://Materials/Dark/texture_04.png<>uid://cfyq11pbkk3ow::::res://Materials/Orange/texture_09.png<>res://Scripts/scrWaveManager.gd<>uid://x2pmxdix8mta::::res://Materials/Orange/texture_02.png<>uid://clnr07phywjs2::::res://Materials/Red/texture_10.png
+::res://Scripts/::1729673199
 scrBoundry.gd::GDScript::-1::1728946100::0::1::::<>Area3D<>::
 scrEnemyGeneric.gd::GDScript::-1::1729490882::0::1::::<>CharacterBody3D<>::
-scrGlobals.gd::GDScript::-1::1728809472::0::1::::<>Node<>::
-scrPlayer.gd::GDScript::-1::1729480635::0::1::::<>CharacterBody3D<>::
+scrGlobals.gd::GDScript::-1::1729667629::0::1::::<>Node<>::
+scrPlayer.gd::GDScript::-1::1729672975::0::1::::<>CharacterBody3D<>::
 scrRigidBodyManager.gd::GDScript::-1::1728305104::0::1::::<>RigidBody3D<>::
 scrRocket.gd::GDScript::-1::1729481828::0::1::::<>Node3D<>::
-scrRoomController.gd::GDScript::-1::1729491253::0::1::::<>Node3D<>::
-scrWaveManager.gd::GDScript::-1::1728810486::0::1::::<>Node3D<>::
+scrRoomController.gd::GDScript::-1::1729667871::0::1::::<>Node3D<>::
+scrWaveManager.gd::GDScript::-1::1729673199::0::1::::<>Node3D<>::
