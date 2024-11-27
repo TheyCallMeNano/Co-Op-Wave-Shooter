@@ -1,3 +1,5 @@
+CSGMesh3D
+FuncGodotMap
 AnimationPlayer
 AnimationTree
 MultiplayerSynchronizer
@@ -8,8 +10,5 @@ Label
 CollisionShape3D
 Area3D
 Node3D
-CSGMesh3D
 MeshInstance3D
 CSGTorus3D
-CSGSphere3D
-NavigationAgent3D

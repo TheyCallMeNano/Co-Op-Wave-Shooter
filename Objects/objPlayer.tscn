@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://dfvwlanihtgh7"]
 
 [ext_resource type="Script" path="res://Scripts/scrPlayer.gd" id="1_mmjxm"]
-[ext_resource type="Material" uid="uid://bcsr1ck18tigu" path="res://Materials/PlayerMat.tres" id="2_1yy68"]
+[ext_resource type="Material" uid="uid://bcsr1ck18tigu" path="res://textures/PlayerMat.tres" id="2_1yy68"]
 [ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="3_tm7ya"]
 [ext_resource type="PackedScene" uid="uid://c8kqpaxkqf8tg" path="res://Models/Rocket Launcher/modRocketLauncher01.gltf" id="5_4ske5"]
 [ext_resource type="Texture2D" uid="uid://bylpmrg7yak7r" path="res://crosshair.png" id="5_iwquq"]
@@ -140,10 +140,10 @@ texture_filter = 2
 texture = ExtResource("3_tm7ya")
 
 [node name="RocketVM" parent="Head/Camera3D" instance=ExtResource("5_4ske5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, -1, -0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, -1, -0.81428)
 
 [node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D/RocketVM"]
-transform = Transform3D(1.225, 0, 0, 0, 1.225, 0, 0, 0, 1.225, 0.025, 0.4, 0.574)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025, 0.4, 0.204059)
 target_position = Vector3(0, 0, -1)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Head/Camera3D/RocketVM"]

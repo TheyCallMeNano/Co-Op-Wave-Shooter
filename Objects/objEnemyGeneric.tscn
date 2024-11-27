@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c0p1a33c63s7m"]
 
-[ext_resource type="Texture2D" uid="uid://c6t0cwawepn62" path="res://Materials/Purple/texture_05.png" id="1_antu2"]
+[ext_resource type="Texture2D" uid="uid://c6t0cwawepn62" path="res://textures/Purple/texture_05.png" id="1_antu2"]
 [ext_resource type="Script" path="res://Scripts/scrEnemyGeneric.gd" id="1_bfuau"]
 [ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="2_i3say"]
 
