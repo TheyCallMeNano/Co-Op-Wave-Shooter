@@ -1,6 +1,7 @@
 extends Node3D
 
 @onready var enemy = preload("res://Objects/objEnemyGeneric.tscn")
+@onready var paths = $"../Paths".get_children()
 
 @onready var children = get_children()
 @onready var childrenAmt = get_child_count()
@@ -33,7 +34,19 @@ func startNewWave(amt):
 		var actual_spawn_amt = min(amt, spawn_points.size())
 		var used_indices = []
 		for i in range(actual_spawn_amt):
-
+			
+			# Generate a random index for the path
+			var random_index = randi_range(1, paths.size())
+			
+			# Construct the path as a string
+			var path_choice = "../Paths/Path" + str(random_index)
+			print(path_choice)
+			
+			# Access the node using get_node()
+			var path_node = get_node(path_choice)
+			var pathChildren = path_node.get_children()
+			print(pathChildren)
+			
 			var enemyInst = enemy.instantiate()
 			var spawn_index = randi() % spawn_points.size()  # Get a random index from spawn_points
 			
@@ -45,5 +58,6 @@ func startNewWave(amt):
 			var spawn_position = spawn_points[spawn_index].position  # Use random spawn points
 			# Debug: Log the position where the enemy will spawn
 			enemyInst.position = spawn_position
+			enemyInst.checkpoints = pathChildren
 			globals.eAlive += 1
 			call_deferred("add_child", enemyInst)

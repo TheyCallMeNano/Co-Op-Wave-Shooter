@@ -20,6 +20,9 @@ var grounded = true
 var prevGrounded = true
 var wishDir = Vector3.ZERO
 
+var checkpoints = []
+var pathProgress = 0
+
 var stuckCounter = 0
 var finalDest = Vector3.ZERO
 
@@ -28,16 +31,17 @@ var spawnPos: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	var randomPosition := Vector3(randf_range(-500.0, 500.0), 0, randf_range(-500.0, 500.0))
-	NavAgent.set_target_position(Vector3(112, 12, -103))
+	NavAgent.set_target_position(checkpoints[0].global_position)
 	spawnPos = global_position
 
 func _physics_process(delta: float) -> void:
 	var final_position = NavAgent.get_final_position()
-	finalDest = final_position
 	
 	# Check if the agent has reached the final position within a small threshold distance
-	if plrBody == null && global_position.distance_to(final_position) < 1.0:
-		NavAgent.set_target_position(Vector3(112, 12, -103))
+	if plrBody == null && global_position.distance_to(final_position) < 2.0:
+		if pathProgress != checkpoints.size() - 1:
+			pathProgress += 1
+			NavAgent.set_target_position(checkpoints[pathProgress].global_position)
 		timer.start(10)
 	elif plrBody != null:
 		timer.stop()
@@ -47,10 +51,10 @@ func _physics_process(delta: float) -> void:
 	# Update the destination and calculate movement direction
 	var destination = NavAgent.get_next_path_position()
 	var localDestination = destination - global_position
-	var inputDir = localDestination.normalized()
+	var inputDir = localDestination.normalized() #(0.2,0,0.75)
 	
 	# Set the movement direction for the agent
-	wishDir = inputDir
+	wishDir = Vector3(inputDir.x, 0, inputDir.z)
 	projectedSpeed = (velocity * Vector3(1, 0, 1)).dot(wishDir)
 	
 	# Handle ground and air movement
@@ -179,4 +183,6 @@ func _on_timer_timeout() -> void:
 func _on_sightline_area_entered(area: Area3D) -> void:
 	if area.name == "OnionRing":
 		global_position = spawnPos
+		pathProgress = 0
+		NavAgent.set_target_position(checkpoints[0].global_position)
 		globals.objHP -= 1

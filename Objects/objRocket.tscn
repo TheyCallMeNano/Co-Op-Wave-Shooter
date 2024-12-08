@@ -17,7 +17,7 @@ _data = [Vector2(0.0168539, 0.956044), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 
 point_count = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_icv7r"]
-radius = 1.94121
+radius = 3.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4u3ht"]
 albedo_color = Color(0.83288, 0.073796, 2.88785e-07, 1)

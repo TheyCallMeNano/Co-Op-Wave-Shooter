@@ -1,3 +1,6 @@
+CollisionShape3D
+Area3D
+Node3D
 CSGMesh3D
 FuncGodotMap
 AnimationPlayer
@@ -7,8 +10,5 @@ Timer
 TextureRect
 AudioStreamPlayer2D
 Label
-CollisionShape3D
-Area3D
-Node3D
 MeshInstance3D
 CSGTorus3D

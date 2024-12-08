@@ -182,7 +182,6 @@ layout_mode = 2
 theme = ExtResource("5_uwqy6")
 
 [node name="Crosshair" type="TextureRect" parent="."]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

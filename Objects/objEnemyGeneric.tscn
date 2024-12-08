@@ -1,13 +1,19 @@
-[gd_scene load_steps=8 format=3 uid="uid://c0p1a33c63s7m"]
+[gd_scene load_steps=9 format=3 uid="uid://c0p1a33c63s7m"]
 
-[ext_resource type="Texture2D" uid="uid://c6t0cwawepn62" path="res://textures/Purple/texture_05.png" id="1_antu2"]
 [ext_resource type="Script" path="res://Scripts/scrEnemyGeneric.gd" id="1_bfuau"]
 [ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="2_i3say"]
+[ext_resource type="Texture2D" uid="uid://5d2b8gnh7j3" path="res://textures/Purple/texture_04.png" id="2_rss8e"]
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_utvf7"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tedne"]
+albedo_texture = ExtResource("2_rss8e")
+uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oglgy"]
-albedo_texture = ExtResource("1_antu2")
+[sub_resource type="CylinderMesh" id="CylinderMesh_4amv5"]
+material = SubResource("StandardMaterial3D_tedne")
+radial_segments = 16
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qc3lb"]
+height = 2.02177
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k2s01"]
 properties/0/path = NodePath(".:position")
@@ -23,11 +29,11 @@ points = PackedVector3Array(-0.364253, -1.95648, 0.185385, 0.369041, 1.95544, 0.
 [node name="ObjEnemyGeneric" type="CharacterBody3D" groups=["bodies", "enemies"]]
 script = ExtResource("1_bfuau")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CylinderShape3D_utvf7")
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+mesh = SubResource("CylinderMesh_4amv5")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CollisionShape3D"]
-material = SubResource("StandardMaterial3D_oglgy")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_qc3lb")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.541638, 0.472633, 0)
@@ -44,9 +50,12 @@ target_desired_distance = 2.0
 avoidance_enabled = true
 height = 2.0
 radius = 2.0
+use_3d_avoidance = true
 debug_enabled = true
 
 [node name="Sightline" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sightline"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
