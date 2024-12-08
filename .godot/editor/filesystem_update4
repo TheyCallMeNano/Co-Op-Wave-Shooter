@@ -1,4 +1,4 @@
-res://Rooms/Base.tscn
+res://Objects/objEnemyGeneric.tscn
 res://uiTheme.tres
 res://textures/Light/texture_04.tres
 res://textures/Dark/texture_08.tres
@@ -10,10 +10,15 @@ res://textures/Red/texture_07.tres
 res://textures/Purple/texture_09.tres
 res://textures/Green/texture_09.tres
 res://Viewmodel.gdshader
+res://Scripts/scrPlayer.gd
 res://Objects/objPlayer.tscn
 res://Objects/objRocket.tscn
+res://Rooms/Base.tscn
 res://Objects/objBall.tscn
-res://Objects/objEnemyGeneric.tscn
 res://playerModel.tscn
-res://Scripts/scrWaveManager.gd
+res://Scripts/scrGlobals.gd
+res://Scripts/scrRigidBodyManager.gd
+res://Scripts/scrRocket.gd
 res://Scripts/scrEnemyGeneric.gd
+res://Scripts/scrRoomController.gd
+res://Scripts/scrWaveManager.gd

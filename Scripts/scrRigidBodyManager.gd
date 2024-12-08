@@ -1,7 +1,7 @@
 extends RigidBody3D
 
-var culling = false
-@onready var timer = $Timer
+var culling := false
+@onready var timer := $Timer
 
 @warning_ignore("unused_parameter")
 func _physics_process(delta: float) -> void:

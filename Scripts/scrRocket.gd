@@ -5,17 +5,17 @@ extends Node3D
 @export var FORCE: float = 0.0
 @export var RADIUS: Vector3
 
-var spawner = PackedScene
-var pSpeed = 0.0
-var colliding = false
+var spawner := PackedScene
+var pSpeed := 0.0
+var colliding := false
 
-@onready var model = $modRocket
-@onready var ray = $RayCast3D
-@onready var explode = $"Explosion Radius/CPUParticles3D"
-@onready var radius = $"Explosion Radius"
+@onready var model := $modRocket
+@onready var ray := $RayCast3D
+@onready var explode := $"Explosion Radius/CPUParticles3D"
+@onready var radius := $"Explosion Radius"
 
 
-func _ready():
+func _ready() -> void:
 	$"Explosion Radius".scale = RADIUS
 
 func _process(delta: float) -> void:
@@ -40,9 +40,9 @@ func _on_explosion_radius_body_entered(body: Node3D) -> void:
 	if body.is_in_group("bodies"):
 		repelBody(body)
 	if body.is_in_group("enemies"):
-		var critChance = randf_range(spawner.critBucketCur, spawner.critBucketMax)
+		var critChance := randf_range(spawner.critBucketCur, spawner.critBucketMax)
 		print(critChance)
-		var dmg
+		var dmg: float
 		if critChance >= 750.0:
 			if pSpeed != 0:
 				dmg = 20.0 + (pSpeed * 0.35) * 3.0
@@ -71,14 +71,14 @@ func _on_explosion_radius_body_entered(body: Node3D) -> void:
 		body.hp -= dmg
 		globals.chatLog.append(spawner.username + " did " + str(int(dmg)) + " to " + body.name + "\n")
 
-func repelBody(body):
-	var explosionPos = radius.global_position
-	var bodyPos = body.global_position
-	var dir = bodyPos - explosionPos
+func repelBody(body: Object) -> void:
+	var explosionPos : Vector3 = radius.global_position
+	var bodyPos : Vector3 = body.global_position
+	var dir := bodyPos - explosionPos
 	
 	dir = dir.normalized()
 	
-	var pressure = dir * FORCE
+	var pressure := dir * FORCE
 	
 	if body is CharacterBody3D:
 		body.velocity += pressure

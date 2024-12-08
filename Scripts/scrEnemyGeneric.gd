@@ -9,24 +9,24 @@ extends CharacterBody3D
 # Movement
 @export_category("Movement")
 var projectedSpeed: float
-@export var jumpVelocity = 4.5
-@export var friction = 6.0
-@export var accel = 5.0
-@export var accelAir = 40.0
-@export var groundedMax = 15.0
-@export var airMax = 2.5
-@export var linearFriction = 10.0
-var grounded = true
-var prevGrounded = true
-var wishDir = Vector3.ZERO
+@export var jumpVelocity := 4.5
+@export var friction := 6.0
+@export var accel := 5.0
+@export var accelAir := 40.0
+@export var groundedMax := 15.0
+@export var airMax := 2.5
+@export var linearFriction := 10.0
+var grounded := true
+var prevGrounded := true
+var wishDir := Vector3.ZERO
 
-var checkpoints = []
-var pathProgress = 0
+var checkpoints := []
+var pathProgress := 0
 
-var stuckCounter = 0
-var finalDest = Vector3.ZERO
+var stuckCounter := 0
+var finalDest := Vector3.ZERO
 
-var plrBody = null
+var plrBody : Object = null
 var spawnPos: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
@@ -35,7 +35,7 @@ func _ready() -> void:
 	spawnPos = global_position
 
 func _physics_process(delta: float) -> void:
-	var final_position = NavAgent.get_final_position()
+	var final_position := NavAgent.get_final_position()
 	
 	# Check if the agent has reached the final position within a small threshold distance
 	if plrBody == null && global_position.distance_to(final_position) < 2.0:
@@ -49,9 +49,9 @@ func _physics_process(delta: float) -> void:
 		NavAgent.set_target_position(plrBody.global_position)
 	
 	# Update the destination and calculate movement direction
-	var destination = NavAgent.get_next_path_position()
-	var localDestination = destination - global_position
-	var inputDir = localDestination.normalized() #(0.2,0,0.75)
+	var destination := NavAgent.get_next_path_position()
+	var localDestination := destination - global_position
+	var inputDir := localDestination.normalized() #(0.2,0,0.75)
 	
 	# Set the movement direction for the agent
 	wishDir = Vector3(inputDir.x, 0, inputDir.z)
@@ -78,11 +78,11 @@ func _process(delta: float) -> void:
 		globals.eAlive -= 1
 		queue_free()
 
-func applyFriction(delta):
-	var speedScalar = 0.0
-	var frictionCurve = 0.0
-	var speedLoss = 0.0
-	var curSpd = 0.0
+func applyFriction(delta: float) -> void:
+	var speedScalar := 0.0
+	var frictionCurve := 0.0
+	var speedLoss := 0.0
+	var curSpd := 0.0
 	
 	curSpd = velocity.length()
 	
@@ -98,9 +98,9 @@ func applyFriction(delta):
 	
 	velocity *= speedScalar
 
-func applyAccel(acceleration: float, topSpd: float, delta):
-	var speedLeft = 0.0
-	var accelFinal = 0.0
+func applyAccel(acceleration: float, topSpd: float, delta: float) -> void:
+	var speedLeft := 0.0
+	var accelFinal := 0.0
 	
 	speedLeft = (topSpd * wishDir.length()) - projectedSpeed
 	
@@ -114,7 +114,7 @@ func applyAccel(acceleration: float, topSpd: float, delta):
 	velocity.x += accelFinal * wishDir.x
 	velocity.z += accelFinal * wishDir.z
 
-func airMove(delta):
+func airMove(delta: float) -> void:
 	applyAccel(accelAir, airMax, delta)
 	
 	clipVelocity(get_wall_normal(), 14, delta)
@@ -127,7 +127,7 @@ func airMove(delta):
 	if is_on_floor() && get_floor_normal().y < 0:
 		velocity.y = max(velocity.y, 0)  # Prevent bouncing off downward slopes
 
-func groundMove(delta):
+func groundMove(delta: float) -> void:
 	applyAccel(accel, groundedMax, delta)
 	
 	if grounded == prevGrounded:
@@ -143,9 +143,9 @@ func groundMove(delta):
 
 
 @warning_ignore("unused_parameter")
-func clipVelocity(normal: Vector3, overBounce: float, delta) -> void:
-	var correctionAmt = 0.0
-	var correctionDir = Vector3.ZERO
+func clipVelocity(normal: Vector3, overBounce: float, delta: float) -> void:
+	var correctionAmt := 0.0
+	var correctionDir := Vector3.ZERO
 	var moveDir : Vector3 = get_velocity().normalized()
 	
 	correctionAmt = moveDir.dot(normal) * overBounce
@@ -166,7 +166,7 @@ func _on_sightline_body_exited(body: Node3D) -> void:
 
 
 func _on_timer_timeout() -> void:
-	var next_checkpoint = NavAgent.get_next_path_position()
+	var next_checkpoint := NavAgent.get_next_path_position()
 	#print("Distance to next checkpoint: ", global_position.distance_to(next_checkpoint))
 	#stuckCounter += 1
 	#if stuckCounter < 5:

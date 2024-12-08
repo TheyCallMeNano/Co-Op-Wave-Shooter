@@ -1,11 +1,11 @@
 extends Node3D
 
-@onready var peer = ENetMultiplayerPeer.new()
+@onready var peer := ENetMultiplayerPeer.new()
 @export var playerScene: PackedScene
-var port = 135
-var address = "137.184.94.3"
+var port := 135
+var address := "137.184.94.3"
 
-var player_nodes = {}  # Store a mapping between peerID and player nodes
+var player_nodes := {}  # Store a mapping between peerID and player nodes
 
 func _ready() -> void:
 	for arg in OS.get_cmdline_args():
@@ -16,7 +16,7 @@ func _ready() -> void:
 			addPlayer(1)
 			
 			multiplayer.peer_connected.connect(
-				func(newPeerID):
+				func(newPeerID: int) -> void:
 					rpc_id(newPeerID, "addPreviousPlayers", globals.connectedIDs)
 					rpc("addNewPlayer", newPeerID)
 					addPlayer(newPeerID)
@@ -25,7 +25,7 @@ func _ready() -> void:
 			)
 			
 			peer.peer_disconnected.connect(
-				func(peerID):
+				func(peerID: int) -> void:
 					await get_tree().create_timer(1).timeout
 					if player_nodes.has(peerID):
 						player_nodes[peerID].queue_free()  # Free the player node by peerID reference
@@ -34,9 +34,9 @@ func _ready() -> void:
 					globals.chatLog.append("Player " + str(peerID) + " has disconnected\n")
 			)
 
-func addPlayer(peerID):
+func addPlayer(peerID: int) -> void:
 	globals.connectedIDs.append(peerID)
-	var player = playerScene.instantiate()
+	var player := playerScene.instantiate()
 	player.position.y = 1.5
 	player.set_multiplayer_authority(peerID)
 	player.name = "Player_" + str(peerID)  # Set consistent node names
@@ -45,13 +45,13 @@ func addPlayer(peerID):
 	call_deferred("add_child", player)
 
 @rpc
-func addNewPlayer(newPeerID):
+func addNewPlayer(newPeerID: int) -> void:
 	if newPeerID != 2:
 		addPlayer(newPeerID)
 
 @rpc
-func addPreviousPlayers(peerIDs):
-	for peerID in peerIDs:
+func addPreviousPlayers(peerIDs: Array) -> void:
+	for peerID: int in peerIDs:
 		addPlayer(peerID)
 
 func _on_host_pressed() -> void:
@@ -61,7 +61,7 @@ func _on_host_pressed() -> void:
 	addPlayer(1)
 	
 	peer.peer_connected.connect(
-		func(newPeerID):
+		func(newPeerID: int) -> void:
 			rpc_id(newPeerID, "addPreviousPlayers", globals.connectedIDs)
 			rpc("addNewPlayer", newPeerID)
 			addPlayer(newPeerID)
@@ -70,7 +70,7 @@ func _on_host_pressed() -> void:
 	)
 	
 	peer.peer_disconnected.connect(
-		func(peerID):
+		func(peerID: int) -> void:
 			await get_tree().create_timer(1).timeout
 			if player_nodes.has(peerID):
 				player_nodes[peerID].queue_free()  # Free the player node by peerID reference

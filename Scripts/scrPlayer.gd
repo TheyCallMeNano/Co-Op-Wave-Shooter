@@ -1,18 +1,18 @@
 extends CharacterBody3D
 
 # Imports
-@onready var ball = preload("res://Objects/objBall.tscn")
-@onready var camera = $Head/Camera3D
-@onready var head = $Head
-@onready var rocket = preload("res://Objects/objRocket.tscn")
-@onready var ray = $Head/Camera3D/RocketVM/RayCast3D
-@onready var inputBox = $InfoCorner/InputBox
-@onready var UIAudio = $AudioStreamPlayer2D
-@onready var enemy = preload("res://Objects/objEnemyGeneric.tscn")
-@onready var timer = $markerTimer
-@onready var hitMarker = $Crosshair/Hitmarker
-@onready var infoCorner = $InfoCorner
-@onready var crosshair = $Crosshair
+@onready var ball := preload("res://Objects/objBall.tscn")
+@onready var camera := $Head/Camera3D
+@onready var head := $Head
+@onready var rocket := preload("res://Objects/objRocket.tscn")
+@onready var ray := $Head/Camera3D/RocketVM/RayCast3D
+@onready var inputBox := $InfoCorner/InputBox
+@onready var UIAudio := $AudioStreamPlayer2D
+@onready var enemy := preload("res://Objects/objEnemyGeneric.tscn")
+@onready var timer := $markerTimer
+@onready var hitMarker := $Crosshair/Hitmarker
+@onready var infoCorner := $InfoCorner
+@onready var crosshair := $Crosshair
 
 # Consts
 const BOB_FREQ = 2.0
@@ -21,75 +21,75 @@ const BOB_AMP = 0.08
 # Movement
 @export_category("Movement")
 var projectedSpeed: float
-@export var jumpVelocity = 4.5
-@export var lookAroundSpeed = 0.005
-@export var push = 5.0 
-@export var friction = 6.0
-@export var accel = 5.0
-@export var accelAir = 40.0
-@export var groundedMax = 15.0
-@export var airMax = 2.5
-@export var linearFriction = 10.0
-@export var autoBhop = true
-var grounded = true
-var prevGrounded = true
-var wishDir = Vector3.ZERO
+@export var jumpVelocity := 4.5
+@export var lookAroundSpeed := 0.005
+@export var push := 5.0 
+@export var friction := 6.0
+@export var accel := 5.0
+@export var accelAir := 40.0
+@export var groundedMax := 15.0
+@export var airMax := 2.5
+@export var linearFriction := 10.0
+@export var autoBhop := true
+var grounded := true
+var prevGrounded := true
+var wishDir := Vector3.ZERO
 
 # Gameplay
 @export_category("Gameplay")
-@export var critBucketMin = 0
-@export var critBucketMax = 1000
-var critBucketCur = 0
+@export var critBucketMin := 0
+@export var critBucketMax := 1000
+var critBucketCur := 0
 
 # Settings
 @export_category("Settings")
 # Cannot export username as it is set by a different script
-var username = ""
+var username := ""
 @export_enum("Center", "Right") var viewmodel: int
-@export var rocketForce = 10.0
-@export var rocketSpeed = 60.0
+@export var rocketForce := 10.0
+@export var rocketSpeed := 60.0
 @export var rocketRadius: = Vector3(1,1,1)
 
 # Utility
 var start_time: int = 0
 var elapsed_time: int = 0
 var speedrunning: int = 0
-var chatArray = []
-var chatting = false
-var tBob = 0.0
-var isServer = false
+var chatArray := []
+var chatting := false
+var tBob := 0.0
+var isServer := false
 
-var commandDictionary = {
-	"jumpVelocity": func(val):
-		var value = val.to_float() 
+var commandDictionary := {
+	"jumpVelocity": func(val: String) -> void:
+		var value := val.to_float() 
 		jumpVelocity = value,
-	"push": func(val):
-		var value = val.to_float()
+	"push": func(val: String) -> void:
+		var value := val.to_float()
 		push = value,
-	"gravity": func(val):
-		var value = val.to_float()
+	"gravity": func(val: String) -> void:
+		var value := val.to_float()
 		PhysicsServer3D.area_set_param(get_viewport().find_world_3d().space, PhysicsServer3D.AREA_PARAM_GRAVITY, value)
 		globals.gravity = value,
-	"respawn": func(_val):
+	"respawn": func(_val: String) -> void:
 		velocity = Vector3.ZERO
 		global_position = Vector3(0,3,0),
-	"spawn": func(val):
-		var spawnables = {"ball": ball, "rocket": rocket, "enemy": enemy}
-		for i in spawnables.keys():
+	"spawn": func(val: String) -> void:
+		var spawnables := {"ball": ball, "rocket": rocket, "enemy": enemy}
+		for i : String in spawnables.keys():
 			if val.begins_with(i):
-				var itm = val.erase(0, i.length()+1)
-				var amnt = itm.to_int()
+				var itm := val.erase(0, i.length()+1)
+				var amnt := itm.to_int()
 				globals.chatLog.append("Spawning in " + str(amnt) + " " + val + "\n")
 				
 				for j in amnt:
 					handleSpawning(spawnables[i]),
-	"accel": func(val):
-		var value = val.to_float()
+	"accel": func(val: String) -> void:
+		var value := val.to_float()
 		accel = value,
-	"accelAir": func(val):
-		var value = val.to_float()
+	"accelAir": func(val: String) -> void:
+		var value := val.to_float()
 		accelAir = value,
-	"viewmodel": func(val):
+	"viewmodel": func(val: String) -> void:
 		if val == "Right" || val == "right":
 			globals.chatLog.append("Set Viewmodel to: Right for " + username + "\n")
 			rpc("syncChat", "Set Viewmodel to: Right for " + username + "\n")
@@ -98,8 +98,8 @@ var commandDictionary = {
 			globals.chatLog.append("Set Viewmodel to: Center for " + username + "\n")
 			rpc("syncChat", "Set Viewmodel to: Center for " + username + "\n")
 			$Head/Camera3D/RocketVM.position = Vector3(-0.02, -1, -0.6),
-	"speedrunning": func(val):
-		var value = val.to_int()
+	"speedrunning": func(val: String) -> void:
+		var value := val.to_int()
 		if value == 1:
 			globals.chatLog.append("Started speedrunning for " + username + "\n")
 			rpc("syncChat", "Started speedrunning for " + username + "\n")
@@ -108,20 +108,20 @@ var commandDictionary = {
 			globals.chatLog.append("Stoped speedrunning for " + username + "\n")
 			rpc("syncChat", "Stoped speedrunning for " + username + "\n")
 			stop_stopwatch(),
-	"rocketForce": func(val):
+	"rocketForce": func(val: String) -> void:
 		globals.chatLog.append("Set Rocket Force to: " + val + " for " + username + "\n")
 		rpc("syncChat", "Set Rocket Force to: " + val + " for " + username + "\n")
-		var value = val.to_float()
+		var value := val.to_float()
 		rocketForce = value,
-	"rocketSpeed": func(val):
+	"rocketSpeed": func(val: String) -> void:
 		globals.chatLog.append("Set Rocket Speed to: " + val + " for " + username + "\n")
 		rpc("syncChat", "Set Rocket Speed to: " + val + " for " + username + "\n")
-		var value = val.to_float()
+		var value := val.to_float()
 		rocketSpeed = value,
-	"rocketRadius": func(val):
+	"rocketRadius": func(val: String) -> void:
 		globals.chatLog.append("Set Rocket Radius to: " + val + " for " + username + "\n")
 		rpc("syncChat", "Set Rocket Radius to: " + val + " for " + username + "\n")
-		var value = val.to_float()
+		var value := val.to_float()
 		rocketRadius = Vector3(value, value, value)
 }
 
@@ -183,10 +183,10 @@ func _process(delta: float) -> void:
 			$InfoCorner/SpeedrunTimer.text = get_elapsed_time()
 
 
-func _physics_process(delta):
+func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority() && isServer == false:
 		if chatting == false:
-			var inputDir = Input.get_vector("Left", "Right", "Forward", "Backward")
+			var inputDir := Input.get_vector("Left", "Right", "Forward", "Backward")
 			wishDir = (head.transform.basis * Vector3(inputDir.x, 0, inputDir.y)).normalized()
 			projectedSpeed = (velocity * Vector3(1,0,1)).dot(wishDir)
 		
@@ -207,7 +207,7 @@ func _physics_process(delta):
 		move_and_slide()
 		
 		for i in get_slide_collision_count():
-			var c = get_slide_collision(i)
+			var c := get_slide_collision(i)
 			if c.get_collider() is RigidBody3D:
 				c.get_collider().apply_central_impulse(-c.get_normal() * push)
 		rpc("remoteSetPos", global_position, head.rotation, camera.rotation)
@@ -226,7 +226,7 @@ func _on_marker_timer_timeout() -> void:
 
 func _on_input_box_text_submitted(new_text: String) -> void:
 	if new_text.begins_with("/"):
-		var cText = new_text.substr(1)
+		var cText := new_text.substr(1)
 		commandParser(cText)
 		chatting = false
 	else:
@@ -236,28 +236,28 @@ func _on_input_box_text_submitted(new_text: String) -> void:
 	inputBox.release_focus()
 	inputBox.text = ""
 
-func _unhandled_input(event: InputEvent):
+func _unhandled_input(event: InputEvent) -> void:
 	if is_multiplayer_authority() && isServer == false:
 		if event is InputEventMouseMotion:
 			head.rotate_y(-event.relative.x * lookAroundSpeed)
 			camera.rotate_x(-event.relative.y * lookAroundSpeed)
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
-func commandParser(command: String):
+func commandParser(command: String) -> void:
 	# Define a dictionary where the key is the command and the value is a Callable (function reference) that modifies the respective variable
 	
 	# Iterate through the dictionary keys to find the command in the input
-	for i in commandDictionary.keys():
+	for i: String in commandDictionary.keys():
 		if command.begins_with(i):
 			# Erase the command part from the string, leaving only the value
-			var cmd = command.erase(0, i.length()+1)
-			var value = cmd # Erases the command part (e.g., "push ") from the input string
+			var cmd := command.erase(0, i.length()+1)
+			var value := cmd # Erases the command part (e.g., "push ") from the input string
 			
 			# Call the corresponding function using .call()
 			commandDictionary[i].call(value)
 			break
 
-func setOldUsernames():
+func setOldUsernames() -> void:
 	print("Iterating " + str(get_multiplayer_authority()))
 	print(globals.clientObj.size())
 	for i in globals.clientObj.size():
@@ -290,9 +290,9 @@ func get_elapsed_time() -> String:
 
 #region Movement
 @warning_ignore("unused_parameter")
-func clipVelocity(normal: Vector3, overBounce: float, delta) -> void:
-	var correctionAmt = 0.0
-	var correctionDir = Vector3.ZERO
+func clipVelocity(normal: Vector3, overBounce: float, delta: float) -> void:
+	var correctionAmt := 0.0
+	var correctionDir := Vector3.ZERO
 	var moveDir : Vector3 = get_velocity().normalized()
 	
 	correctionAmt = moveDir.dot(normal) * overBounce
@@ -302,11 +302,11 @@ func clipVelocity(normal: Vector3, overBounce: float, delta) -> void:
 	# Below works well if on high globals.gravity
 	velocity.y -= correctionDir.y * (globals.gravity/20)
 
-func applyFriction(delta):
-	var speedScalar = 0.0
-	var frictionCurve = 0.0
-	var speedLoss = 0.0
-	var curSpd = 0.0
+func applyFriction(delta: float) -> void:
+	var speedScalar := 0.0
+	var frictionCurve := 0.0
+	var speedLoss := 0.0
+	var curSpd := 0.0
 	
 	curSpd = velocity.length()
 	
@@ -322,9 +322,9 @@ func applyFriction(delta):
 	
 	velocity *= speedScalar
 
-func applyAccel(acceleration: float, topSpd: float, delta):
-	var speedLeft = 0.0
-	var accelFinal = 0.0
+func applyAccel(acceleration: float, topSpd: float, delta: float) -> void:
+	var speedLeft := 0.0
+	var accelFinal := 0.0
 	
 	speedLeft = (topSpd * wishDir.length()) - projectedSpeed
 	
@@ -338,7 +338,7 @@ func applyAccel(acceleration: float, topSpd: float, delta):
 	velocity.x += accelFinal * wishDir.x
 	velocity.z += accelFinal * wishDir.z
 
-func airMove(delta):
+func airMove(delta: float) -> void:
 	applyAccel(accelAir, airMax, delta)
 	
 	clipVelocity(get_wall_normal(), 14, delta)
@@ -346,7 +346,7 @@ func airMove(delta):
 	
 	velocity.y -= globals.gravity * delta
 
-func groundMove(delta):
+func groundMove(delta: float) -> void:
 	applyAccel(accel, groundedMax, delta)
 	
 	if Input.is_action_just_pressed("Jump") && chatting == false || Input.is_action_pressed("Jump") && autoBhop == true && chatting == false:
@@ -360,11 +360,11 @@ func groundMove(delta):
 #endregion
 
 #region Spawn Management
-func spawnEnemy():
-	var enemyInst = enemy.instantiate()
-	var ray_data = self.getMouseRay()
-	var result = ray_data.result
-	var ray_target = ray_data.ray_target
+func spawnEnemy() -> void:
+	var enemyInst := enemy.instantiate()
+	var ray_data := self.getMouseRay()
+	var result : Object = ray_data.result
+	var ray_target : Object = ray_data.ray_target
 	# Defer adding the instance to the scene tree to ensure it's properly initialized
 	get_tree().get_root().call_deferred("add_child", enemyInst)
 	# Use call_deferred to set the position after the instance is added to the tree
@@ -373,8 +373,8 @@ func spawnEnemy():
 	else:
 		enemyInst.call_deferred("set_position", ray_target)
 
-func spawnRocket(rot):
-	var rocketInst = rocket.instantiate()
+func spawnRocket(rot: Vector3) -> void:
+	var rocketInst := rocket.instantiate()
 	rocketInst.FORCE = rocketForce
 	rocketInst.SPEED = rocketSpeed
 	rocketInst.RADIUS = rocketRadius
@@ -384,13 +384,13 @@ func spawnRocket(rot):
 	rocketInst.rotation = rot
 	get_parent().call_deferred("add_child", rocketInst)
 
-func spawnBall(red, green, blue):
-	var randomColor = StandardMaterial3D.new()
+func spawnBall(red: float, green: float, blue: float) -> void:
+	var randomColor := StandardMaterial3D.new()
 	randomColor.albedo_color = Color(red, green, blue, 1.0)
-	var ballInst = ball.instantiate()
-	var ray_data = self.getMouseRay()
-	var result = ray_data.result
-	var ray_target = ray_data.ray_target
+	var ballInst := ball.instantiate()
+	var ray_data := self.getMouseRay()
+	var result : Object = ray_data.result
+	var ray_target : Object = ray_data.ray_target
 	# Defer adding the instance to the scene tree to ensure it's properly initialized
 	get_tree().get_root().call_deferred("add_child", ballInst)
 	# Use call_deferred to set the position after the instance is added to the tree
@@ -400,16 +400,16 @@ func spawnBall(red, green, blue):
 		ballInst.call_deferred("set_position", ray_target)
 	ballInst.get_child(0).material_override = randomColor
 
-func handleSpawning(obj):
+func handleSpawning(obj : Object) -> void:
 	if obj == ball:
-		var r = randf_range(0.01, 1.0)
-		var g = randf_range(0.01, 1.0)
-		var b = randf_range(0.01, 1.0)
+		var r := randf_range(0.01, 1.0)
+		var g := randf_range(0.01, 1.0)
+		var b := randf_range(0.01, 1.0)
 		spawnBall(r,g,b)
 		rpc("spawnBallsRemote", r, g, b)
 	
 	elif obj == rocket:
-		var rot = $Head/Camera3D.rotation + $Head.rotation
+		var rot : Vector3 = $Head/Camera3D.rotation + $Head.rotation
 		spawnRocket(rot)
 		rpc("spawnRocketRemote", rot)
 	
@@ -418,18 +418,18 @@ func handleSpawning(obj):
 #endregion
 
 func getMouseRay() -> Dictionary:
-	var mousePos = get_viewport().get_mouse_position()
-	var rayOrigin = camera.project_ray_origin(mousePos)
-	var rayDir = camera.project_ray_normal(mousePos)
-	var rayLen = 100.0
-	var rayTarget = rayOrigin + rayDir * rayLen
+	var mousePos := get_viewport().get_mouse_position()
+	var rayOrigin : Vector3 = camera.project_ray_origin(mousePos)
+	var rayDir : Vector3 = camera.project_ray_normal(mousePos)
+	var rayLen := 100.0
+	var rayTarget := rayOrigin + rayDir * rayLen
 
-	var rayQuery = PhysicsRayQueryParameters3D.new()
+	var rayQuery := PhysicsRayQueryParameters3D.new()
 	rayQuery.from = rayOrigin
 	rayQuery.to = rayTarget
 
-	var spaceState = get_world_3d().direct_space_state
-	var result = spaceState.intersect_ray(rayQuery)
+	var spaceState := get_world_3d().direct_space_state
+	var result := spaceState.intersect_ray(rayQuery)
 
 	# Return both the result and rayTarget in a dictionary
 	return {
@@ -437,8 +437,8 @@ func getMouseRay() -> Dictionary:
 		"ray_target": rayTarget
 	}
 
-func headbob(time) -> Vector3:
-	var pos = Vector3.ZERO
+func headbob(time: float) -> Vector3:
+	var pos := Vector3.ZERO
 	pos.y = sin(time * BOB_FREQ) * BOB_AMP
 	pos.x = cos(time * BOB_FREQ / 2) * BOB_AMP
 	return pos
@@ -449,20 +449,20 @@ func chatActive() -> void:
 
 #region RPC Calls
 @rpc("unreliable")
-func remoteSetPos(authorityPosition, headRot, camRot):
+func remoteSetPos(authorityPosition: Vector3, headRot: Vector3, camRot: Vector3) -> void:
 	global_position = authorityPosition
 	head.rotation = headRot
 	camera.rotation = camRot
 
 @rpc("reliable")
-func spawnBallsRemote(r, g, b):
+func spawnBallsRemote(r: float, g: float, b:float ) -> void:
 	spawnBall(r, g, b)
 
 @rpc("reliable")
-func spawnRocketRemote(rot):
+func spawnRocketRemote(rot: Vector3) -> void:
 	spawnRocket(rot)
 
 @rpc("reliable")
-func spawnEnemyRemote():
+func spawnEnemyRemote() -> void:
 	spawnEnemy()
 #endregion
