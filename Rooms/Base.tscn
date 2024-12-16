@@ -406,6 +406,15 @@ theme = ExtResource("3_inl5u")
 placeholder_text = "Enter Port"
 alignment = 1
 
+[node name="OptionButton" type="OptionButton" parent="Control/Menu"]
+layout_mode = 2
+theme = ExtResource("3_inl5u")
+selected = 0
+item_count = 2
+popup/item_0/text = "Rocket Man"
+popup/item_1/text = "Winston Hook"
+popup/item_1/id = 1
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hklbe")
 

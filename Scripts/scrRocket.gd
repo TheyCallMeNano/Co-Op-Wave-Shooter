@@ -40,20 +40,21 @@ func _on_explosion_radius_body_entered(body: Node3D) -> void:
 	if body.is_in_group("bodies"):
 		repelBody(body)
 	if body.is_in_group("enemies"):
-		var critChance := randf_range(spawner.critBucketCur, spawner.critBucketMax)
-		print(critChance)
+		var critChance := randi_range(spawner.critBucketCur, spawner.critBucketMax)
 		var dmg: float
-		if critChance >= 750.0:
+		if critChance >= spawner.critBucketMax * 0.75:
+			print(spawner.username + " landed a crit with the chance - " + str(critChance) + " out of " + str(spawner.critBucketMax))
 			if pSpeed != 0:
-				dmg = 20.0 + (pSpeed * 0.35) * 3.0
+				dmg = 20.0 + (pSpeed * 0.55) * 3.0
 			else:
-				dmg = 20.0 + (1 * 1.35) * 3.0
-			print("crit dmg: ", dmg)
-			if spawner.critBucketCur <= 250:
+				dmg = 20.0 + (1 * 1.55) * 3.0
+			if spawner.critBucketCur <= (spawner.critBucketMax * 0.25):
 				spawner.critBucketCur = spawner.critBucketMin
 			else:
-				spawner.critBucketCur += -250 + dmg
+				spawner.critBucketCur += -(spawner.critBucketMax * 0.25) + dmg
+			print(spawner.username + " crit chance is now at - " + str(spawner.critBucketCur))
 		else:
+			print(spawner.username + " didn't land a crit, current chance is - " + str(spawner.critBucketCur))
 			dmg = 20.0 + (pSpeed * 0.35)
 			spawner.critBucketCur += dmg
 		if dmg >= body.hp:

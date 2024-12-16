@@ -41,6 +41,7 @@ func addPlayer(peerID: int) -> void:
 	player.set_multiplayer_authority(peerID)
 	player.name = "Player_" + str(peerID)  # Set consistent node names
 	player.username = $Control/Menu/Namefield.text
+	player.classInt = $Control/Menu/OptionButton.get_selected_id()
 	player_nodes[peerID] = player  # Map the peerID to the player node
 	call_deferred("add_child", player)
 

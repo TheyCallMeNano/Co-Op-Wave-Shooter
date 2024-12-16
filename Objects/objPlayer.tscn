@@ -1,12 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfvwlanihtgh7"]
+[gd_scene load_steps=12 format=3 uid="uid://dfvwlanihtgh7"]
 
 [ext_resource type="Script" path="res://Scripts/scrPlayer.gd" id="1_mmjxm"]
 [ext_resource type="Material" uid="uid://bcsr1ck18tigu" path="res://textures/PlayerMat.tres" id="2_1yy68"]
 [ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="3_tm7ya"]
-[ext_resource type="PackedScene" uid="uid://c8kqpaxkqf8tg" path="res://Models/Rocket Launcher/modRocketLauncher01.gltf" id="5_4ske5"]
 [ext_resource type="Texture2D" uid="uid://bylpmrg7yak7r" path="res://crosshair.png" id="5_iwquq"]
 [ext_resource type="Theme" uid="uid://bt2dwcnmmfacw" path="res://uiTheme.tres" id="5_uwqy6"]
-[ext_resource type="AudioStream" uid="uid://cdj6mvfaddrdt" path="res://Quake_rpg_fire_remastered.wav" id="7_jr8cf"]
 [ext_resource type="Texture2D" uid="uid://epjciyt4vrwq" path="res://hitmarkernonlethal.png" id="8_73r50"]
 [ext_resource type="AudioStream" uid="uid://bpcesmirs8b7t" path="res://hitsound.ogg" id="8_sdjce"]
 
@@ -51,68 +49,6 @@ properties/9/path = NodePath(".:visible")
 properties/9/spawn = true
 properties/9/replication_mode = 1
 
-[sub_resource type="Animation" id="Animation_nt583"]
-length = 0.8
-step = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/RocketVM:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Head/Camera3D/RocketVM/AudioStreamPlayer3D:playing")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="Animation" id="Animation_j52di"]
-resource_name = "RocketShoot"
-length = 0.8
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/RocketVM:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0.349066, 0, 0), Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Head/Camera3D/RocketVM/AudioStreamPlayer3D:playing")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_tjjv8"]
-_data = {
-"RESET": SubResource("Animation_nt583"),
-"RocketShoot": SubResource("Animation_j52di")
-}
-
 [node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51037, 0)
 script = ExtResource("1_mmjxm")
@@ -139,18 +75,9 @@ transform = Transform3D(0.155, 0, 0, 0, 0.155, 0, 0, 0, 0.155, 0, -0.30526, -0.4
 texture_filter = 2
 texture = ExtResource("3_tm7ya")
 
-[node name="RocketVM" parent="Head/Camera3D" instance=ExtResource("5_4ske5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, -1, -0.81428)
-
-[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D/RocketVM"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025, 0.4, 0.204059)
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.6)
 target_position = Vector3(0, 0, -1)
-
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Head/Camera3D/RocketVM"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005218, 0.403943, -0.41525)
-stream = ExtResource("7_jr8cf")
-volume_db = -35.0
-max_distance = 10.0
 
 [node name="Area" type="Area3D" parent="."]
 
@@ -222,11 +149,6 @@ stream = ExtResource("8_sdjce")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_786kr")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_tjjv8")
-}
 
 [node name="markerTimer" type="Timer" parent="."]
 

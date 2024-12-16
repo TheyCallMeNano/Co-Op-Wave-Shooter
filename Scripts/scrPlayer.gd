@@ -5,7 +5,7 @@ extends CharacterBody3D
 @onready var camera := $Head/Camera3D
 @onready var head := $Head
 @onready var rocket := preload("res://Objects/objRocket.tscn")
-@onready var ray := $Head/Camera3D/RocketVM/RayCast3D
+@onready var ray := $Head/Camera3D/RayCast3D
 @onready var inputBox := $InfoCorner/InputBox
 @onready var UIAudio := $AudioStreamPlayer2D
 @onready var enemy := preload("res://Objects/objEnemyGeneric.tscn")
@@ -22,6 +22,9 @@ const BOB_AMP = 0.08
 @export_category("Movement")
 var projectedSpeed: float
 @export var jumpVelocity := 4.5
+@export var restLength := 2.0
+@export var stiffness := 1.0
+@export var dmp := 1.0
 @export var lookAroundSpeed := 0.005
 @export var push := 5.0 
 @export var friction := 6.0
@@ -55,10 +58,15 @@ var start_time: int = 0
 var elapsed_time: int = 0
 var speedrunning: int = 0
 var chatArray := []
+var classInt := 0
 var chatting := false
 var tBob := 0.0
 var isServer := false
-
+var weapon : Object = null
+var animPlayer : AnimationPlayer = null
+var grappleGun : MeshInstance3D = null
+var grappling := false
+var grapplePoint : Vector3
 var commandDictionary := {
 	"jumpVelocity": func(val: String) -> void:
 		var value := val.to_float() 
@@ -97,7 +105,7 @@ var commandDictionary := {
 		elif val == "Center" || val == "center":
 			globals.chatLog.append("Set Viewmodel to: Center for " + username + "\n")
 			rpc("syncChat", "Set Viewmodel to: Center for " + username + "\n")
-			$Head/Camera3D/RocketVM.position = Vector3(-0.02, -1, -0.6),
+			$Head/Camera3D/RocketVM.position = Vector3(0, -1, -0.6),
 	"speedrunning": func(val: String) -> void:
 		var value := val.to_int()
 		if value == 1:
@@ -145,6 +153,8 @@ func _ready() -> void:
 			self.visible = false
 			$Body.disabled = true
 			UIAudio.visible = false
+			
+	classAssignment(classInt)
 
 @warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
@@ -175,13 +185,18 @@ func _process(delta: float) -> void:
 			if Input.is_action_just_pressed("Interact"):
 				handleSpawning(ball)
 			
-			if Input.is_action_pressed("primaryFire") && !$AnimationPlayer.is_playing():
-				$AnimationPlayer.queue("RocketShoot")
+			
+			# Weapon Check
+			if Input.is_action_pressed("primaryFire") && !animPlayer.is_playing() && classInt == 0:
+				animPlayer.queue("RocketShoot")
 				handleSpawning(rocket)
+			if Input.is_action_just_pressed("primaryFire") && !animPlayer.is_playing() && classInt == 1:
+				grappleStart()
+			elif Input.is_action_just_released("primaryFire") && classInt == 1:
+				grappleStop()
 		
 		if speedrunning == 1:
 			$InfoCorner/SpeedrunTimer.text = get_elapsed_time()
-
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority() && isServer == false:
@@ -190,6 +205,28 @@ func _physics_process(delta: float) -> void:
 			wishDir = (head.transform.basis * Vector3(inputDir.x, 0, inputDir.y)).normalized()
 			projectedSpeed = (velocity * Vector3(1,0,1)).dot(wishDir)
 		
+		if grappling == true:
+			var targetDir := global_position.direction_to(grapplePoint)
+			var targetDist := global_position.distance_to(grapplePoint)
+			
+			grappleGun.look_at(grapplePoint, Vector3.UP, true)
+			grappleGun.get_child(1).scale = Vector3(1, 1, targetDist)
+			
+			var displacement := targetDist - restLength
+			
+			var force := Vector3.ZERO
+			
+			if displacement > 0:
+				var springForce := stiffness * displacement
+				var springPulse := targetDir * springForce
+				
+				var velocityDot := velocity.dot(targetDir)
+				var damping := -dmp * velocityDot * targetDir
+				
+				force = springPulse + damping
+			
+			velocity += force * delta
+			
 		if !is_on_floor():
 			grounded = false
 			airMove(delta)
@@ -242,6 +279,33 @@ func _unhandled_input(event: InputEvent) -> void:
 			head.rotate_y(-event.relative.x * lookAroundSpeed)
 			camera.rotate_x(-event.relative.y * lookAroundSpeed)
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
+func grappleStart() -> void:
+	if ray.is_colliding():
+		grapplePoint = ray.get_collision_point()
+		animPlayer.queue("GrappleShoot")
+		grappling = true
+		grappleGun.get_child(1).visible = true
+
+func grappleStop() -> void:
+	grappleGun.get_child(1).visible = false
+	grappling = false
+
+func classAssignment(cInt: int) -> void:
+	if cInt == 0:
+		weapon = load("res://Objects/objRocketVM.tscn")
+		var weaponInst : Object = weapon.instantiate()
+		animPlayer = weaponInst.get_child(0)
+		camera.call_deferred("add_child", weaponInst)
+	elif cInt == 1:
+		weapon = load("res://Objects/objGrapplingVM.tscn")
+		var weaponInst : Object = weapon.instantiate()
+		animPlayer = weaponInst.get_child(0)
+		grappleGun = weaponInst
+		ray.position = Vector3(0, 0, -0.6)
+		ray.set_target_position(Vector3(0, 0, -200))
+		camera.call_deferred("add_child", weaponInst)
+
 
 func commandParser(command: String) -> void:
 	# Define a dictionary where the key is the command and the value is a Callable (function reference) that modifies the respective variable
