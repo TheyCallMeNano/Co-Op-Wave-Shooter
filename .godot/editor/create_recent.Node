@@ -1,8 +1,10 @@
-Node3D
 MeshInstance3D
+Node3D
+Camera3D
+CollisionShape3D
+CharacterBody3D
 AnimationPlayer
 OptionButton
-CollisionShape3D
 Area3D
 CSGMesh3D
 FuncGodotMap
@@ -10,5 +12,3 @@ AnimationTree
 MultiplayerSynchronizer
 Timer
 TextureRect
-AudioStreamPlayer2D
-Label

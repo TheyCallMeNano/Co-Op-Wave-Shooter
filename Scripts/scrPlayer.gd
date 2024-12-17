@@ -453,8 +453,8 @@ func spawnBall(red: float, green: float, blue: float) -> void:
 	randomColor.albedo_color = Color(red, green, blue, 1.0)
 	var ballInst := ball.instantiate()
 	var ray_data := self.getMouseRay()
-	var result : Object = ray_data.result
-	var ray_target : Object = ray_data.ray_target
+	var result : Dictionary = ray_data.result
+	var ray_target : Vector3 = ray_data.ray_target
 	# Defer adding the instance to the scene tree to ensure it's properly initialized
 	get_tree().get_root().call_deferred("add_child", ballInst)
 	# Use call_deferred to set the position after the instance is added to the tree

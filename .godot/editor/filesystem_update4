@@ -10,10 +10,10 @@ res://textures/Red/texture_07.tres
 res://textures/Purple/texture_09.tres
 res://textures/Green/texture_09.tres
 res://Viewmodel.gdshader
-res://Scripts/scrPlayer.gd
 res://Objects/objRocket.tscn
 res://Rooms/Base.tscn
 res://Objects/objBall.tscn
 res://Objects/objEnemyGeneric.tscn
 res://Objects/objRocketVM.tscn
 res://Objects/objGrapplingVM.tscn
+res://Scripts/scrRoomController.gd
