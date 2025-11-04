@@ -1,0 +1,13 @@
+# Current workflow is to create a Godot project inside the root for use whilst developing.
+# As a result we want to specifically decide what to include.
+
+# Ignore all files
+/.godot/shader_cache
+/.godot/imported
+/.godot/exported
+/.godot/editor
+
+# Exceptions
+!/addons
+!/LICENCE
+!/README.md
