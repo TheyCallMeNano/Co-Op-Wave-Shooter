@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://dfvwlanihtgh7"]
 
-[ext_resource type="Script" path="res://Scripts/scrPlayer.gd" id="1_mmjxm"]
+[ext_resource type="Script" uid="uid://bkndld8tk4j2" path="res://Scripts/scrPlayer.gd" id="1_mmjxm"]
 [ext_resource type="Material" uid="uid://bcsr1ck18tigu" path="res://textures/PlayerMat.tres" id="2_1yy68"]
 [ext_resource type="Texture2D" uid="uid://coqwimjmi8yq2" path="res://face.png" id="3_tm7ya"]
 [ext_resource type="Texture2D" uid="uid://bylpmrg7yak7r" path="res://crosshair.png" id="5_iwquq"]
@@ -52,6 +52,7 @@ properties/9/replication_mode = 1
 [node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51037, 0)
 script = ExtResource("1_mmjxm")
+jumpVelocity = 9.0
 
 [node name="Body" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_x5jbe")

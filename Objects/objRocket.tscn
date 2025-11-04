@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://coyaclap7dcdh"]
 
-[ext_resource type="Script" path="res://Scripts/scrRocket.gd" id="1_26d1m"]
+[ext_resource type="Script" uid="uid://himdype411r" path="res://Scripts/scrRocket.gd" id="1_26d1m"]
 [ext_resource type="PackedScene" uid="uid://dqaaggkbp0864" path="res://Models/Rocket/modRocket01.gltf" id="2_2eguq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kk2g5"]

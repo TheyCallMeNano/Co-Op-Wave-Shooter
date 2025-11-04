@@ -1,6 +1,5 @@
 extends Node
 
-
 var chatLog := []
 var connectedIDs := []
 var clientObj := []

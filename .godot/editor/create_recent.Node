@@ -1,8 +1,9 @@
-MeshInstance3D
+CharacterBody3D
 Node3D
+CSGBox3D
+MeshInstance3D
 Camera3D
 CollisionShape3D
-CharacterBody3D
 AnimationPlayer
 OptionButton
 Area3D
@@ -11,4 +12,3 @@ FuncGodotMap
 AnimationTree
 MultiplayerSynchronizer
 Timer
-TextureRect
