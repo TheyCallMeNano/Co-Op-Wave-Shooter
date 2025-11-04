@@ -5,8 +5,8 @@ extends Node3D
 @export var FORCE: float = 0.0
 @export var RADIUS: Vector3
 
-var spawner := PackedScene
-var pSpeed := 0.0
+var spawner: Node = null
+var pSpeed: float = 0.0
 var colliding := false
 
 @onready var model := $modRocket
@@ -17,6 +17,7 @@ var colliding := false
 
 func _ready() -> void:
 	$"Explosion Radius".scale = RADIUS
+	spawner.activeDamage[self] = pSpeed
 
 func _process(delta: float) -> void:
 	if ray.is_colliding() && colliding == false:
@@ -39,38 +40,8 @@ func _on_timer_timeout() -> void:
 func _on_explosion_radius_body_entered(body: Node3D) -> void:
 	if body.is_in_group("bodies"):
 		repelBody(body)
-	if body.is_in_group("enemies"):
-		var critChance := randi_range(spawner.critBucketCur, spawner.critBucketMax)
-		var dmg: float
-		if critChance >= spawner.critBucketMax * 0.75:
-			print(spawner.username + " landed a crit with the chance - " + str(critChance) + " out of " + str(spawner.critBucketMax))
-			if pSpeed != 0:
-				dmg = 20.0 + (pSpeed * 0.55) * 3.0
-			else:
-				dmg = 20.0 + (1 * 1.55) * 3.0
-			if spawner.critBucketCur <= (spawner.critBucketMax * 0.25):
-				spawner.critBucketCur = spawner.critBucketMin
-			else:
-				spawner.critBucketCur += -(spawner.critBucketMax * 0.25) + dmg
-			print(spawner.username + " crit chance is now at - " + str(spawner.critBucketCur))
-		else:
-			print(spawner.username + " didn't land a crit, current chance is - " + str(spawner.critBucketCur))
-			dmg = 20.0 + (pSpeed * 0.35)
-			spawner.critBucketCur += dmg
-		if dmg >= body.hp:
-			spawner.hitMarker.visible = true
-			spawner.hitMarker.texture = load("res://hitmarkerLethal.png")
-			spawner.timer.start(0.25)
-			spawner.UIAudio.stream = load("res://killsound.ogg")
-			spawner.UIAudio.play()
-		else:
-			spawner.hitMarker.visible = true
-			spawner.hitMarker.texture = load("res://hitmarkernonlethal.png")
-			spawner.timer.start(0.25)
-			spawner.UIAudio.stream = load("res://hitsound.ogg")
-			spawner.UIAudio.play()
-		body.hp -= dmg
-		globals.chatLog.append(spawner.username + " did " + str(int(dmg)) + " to " + body.name + "\n")
+	if body.is_in_group("enemies") and spawner and spawner.has_method("dealDamage"):
+		spawner.dealDamage(20.0, body, self)
 
 func repelBody(body: Object) -> void:
 	var explosionPos : Vector3 = radius.global_position

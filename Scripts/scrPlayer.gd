@@ -133,6 +133,8 @@ var commandDictionary := {
 		rocketRadius = Vector3(value, value, value)
 }
 
+var activeDamage: Dictionary = {}
+
 func _ready() -> void:
 	for arg in OS.get_cmdline_args():
 		if arg.contains("--server"):
@@ -447,6 +449,7 @@ func spawnRocket(rot: Vector3) -> void:
 	rocketInst.pSpeed = float((velocity * Vector3(1, 0, 1)).length())
 	rocketInst.rotation = rot
 	get_parent().call_deferred("add_child", rocketInst)
+	activeDamage[rocketInst] = float((velocity * Vector3(1, 0, 1)).length())
 
 func spawnBall(red: float, green: float, blue: float) -> void:
 	var randomColor := StandardMaterial3D.new()
@@ -481,6 +484,47 @@ func handleSpawning(obj : Object) -> void:
 		spawnEnemy()
 #endregion
 
+func dealDamage(base_damage: float, target: Node3D, caller: Node3D) -> void:
+	if !target.is_in_group("enemies"):
+		return
+		
+	var pSpeed: float = activeDamage[caller]
+	var dmg: float
+	var critChance: float = randi_range(critBucketCur, critBucketMax)
+
+	if critChance >= critBucketMax * 0.75:
+		print("%s landed a crit wwith chance %d/%d" % [username, critChance, critBucketMax])
+		dmg = base_damage + (pSpeed * 0.55) * 3.0
+		if critBucketCur <= critBucketMax * 0.25:
+			critBucketCur = critBucketMin
+		else:
+			critBucketCur -= (critBucketMax * 0.25) - dmg
+	else:
+		print("%s didn't crit, chance is %d/%d" % [username, critBucketCur, critBucketMax])
+		dmg = base_damage + (pSpeed * 0.35)
+		critBucketCur += dmg
+
+	# Apply damage
+	target.hp -= dmg
+
+	# UI feedback
+	if dmg >= target.hp:
+		hitMarker.visible = true
+		hitMarker.texture = load("res://hitmarkerLethal.png")
+		timer.start(0.25)
+		UIAudio.stream = load("res://killsound.ogg")
+	else:
+		hitMarker.visible = true
+		hitMarker.texture = load("res://hitmarkernonlethal.png")
+		timer.start(0.25)
+		UIAudio.stream = load("res://hitsound.ogg")
+
+	UIAudio.play()
+
+	globals.chatLog.append("%s did %d to %s\n" % [username, int(dmg), target.name])
+
+	activeDamage.erase(caller)
+	
 func getMouseRay() -> Dictionary:
 	var mousePos := get_viewport().get_mouse_position()
 	var rayOrigin : Vector3 = camera.project_ray_origin(mousePos)
@@ -523,7 +567,7 @@ func spawnBallsRemote(r: float, g: float, b:float ) -> void:
 	spawnBall(r, g, b)
 
 @rpc("reliable")
-func spawnRocketRemote(rot: Vector3) -> void:
+func RocketRemote(rot: Vector3) -> void:
 	spawnRocket(rot)
 
 @rpc("reliable")
