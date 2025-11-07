@@ -50,7 +50,6 @@ properties/9/spawn = true
 properties/9/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51037, 0)
 script = ExtResource("1_mmjxm")
 jumpVelocity = 9.0
 

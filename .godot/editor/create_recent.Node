@@ -1,3 +1,4 @@
+MultiplayerSynchronizer
 ScrollContainer
 Container
 BoxContainer
@@ -12,4 +13,3 @@ CharacterBody3D
 Node3D
 CSGBox3D
 MeshInstance3D
-Camera3D

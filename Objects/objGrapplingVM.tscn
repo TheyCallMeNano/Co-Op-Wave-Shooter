@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://rvqacp83acs3"]
+[gd_scene load_steps=17 format=4 uid="uid://rvqacp83acs3"]
 
 [ext_resource type="Texture2D" uid="uid://bchj8eii5dwkn" path="res://Models/Winston/Tex_2397_0.png" id="1_aa5h7"]
 [ext_resource type="Texture2D" uid="uid://burcmb5diejln" path="res://textures/Red/texture_09.png" id="2_5gel8"]
@@ -157,8 +157,31 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_lhj2c")
 radius = 0.2
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cg4ky"]
+properties/0/path = NodePath("Node3D:visible")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Node3D:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Node3D:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("Node3D:scale")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:position")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:rotation")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath(".:scale")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+
 [node name="Grapple" type="MeshInstance3D"]
-transform = Transform3D(-0.1, 0, -1.50996e-08, 0, 0.1, 0, 1.50996e-08, 0, -0.1, 0, -0.667544, -0.6)
+transform = Transform3D(-0.1, 0, -1.509958e-08, 0, 0.1, 0, 1.509958e-08, 0, -0.1, 0, -0.667544, -0.6)
 mesh = SubResource("ArrayMesh_tiaof")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -174,3 +197,6 @@ visible = false
 transform = Transform3D(1, -3.01992e-07, 1.32005e-14, 0, -4.37114e-08, -1, 3.01992e-07, 1, -4.37114e-08, 0, 0, 1)
 mesh = SubResource("CapsuleMesh_hjq0b")
 skeleton = NodePath("../..")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_cg4ky")
