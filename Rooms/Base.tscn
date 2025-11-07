@@ -1,8 +1,5 @@
-[gd_scene load_steps=60 format=4 uid="uid://bbhrgy4awbqj"]
+[gd_scene load_steps=57 format=4 uid="uid://bbhrgy4awbqj"]
 
-[ext_resource type="PackedScene" uid="uid://dfvwlanihtgh7" path="res://Objects/objPlayer.tscn" id="1_4eee5"]
-[ext_resource type="Script" uid="uid://daidcyjp4sodq" path="res://Scripts/scrRoomController.gd" id="1_pf405"]
-[ext_resource type="Theme" uid="uid://bt2dwcnmmfacw" path="res://uiTheme.tres" id="3_inl5u"]
 [ext_resource type="Script" uid="uid://cuafatfinei46" path="res://Scripts/scrBoundry.gd" id="3_m05io"]
 [ext_resource type="Material" uid="uid://rryx8v87cvdm" path="res://textures/Dark/texture_05.tres" id="7_6ddnb"]
 [ext_resource type="Material" uid="uid://rixh5cuw15t7" path="res://textures/Dark/texture_08.tres" id="8_nlp5k"]
@@ -211,88 +208,34 @@ size = Vector3(1024, 0.1, 1024)
 properties/0/path = NodePath(".:chatLog")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:connectedIDs")
+properties/1/path = NodePath(".:clientObj")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath(".:clientObj")
+properties/2/path = NodePath(".:gravity")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:gravity")
+properties/3/path = NodePath(".:waveNum")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath(".:waveNum")
+properties/4/path = NodePath(".:waveNumMax")
 properties/4/spawn = true
 properties/4/replication_mode = 1
-properties/5/path = NodePath(".:waveNumMax")
+properties/5/path = NodePath(".:eAlive")
 properties/5/spawn = true
 properties/5/replication_mode = 1
-properties/6/path = NodePath(".:eAlive")
+properties/6/path = NodePath(".:eMax")
 properties/6/spawn = true
 properties/6/replication_mode = 1
-properties/7/path = NodePath(".:eMax")
+properties/7/path = NodePath(".:objHP")
 properties/7/spawn = true
 properties/7/replication_mode = 1
-properties/8/path = NodePath(".:objHP")
+properties/8/path = NodePath(".:difficulty")
 properties/8/spawn = true
 properties/8/replication_mode = 1
-properties/9/path = NodePath(".:difficulty")
-properties/9/spawn = true
-properties/9/replication_mode = 1
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jmqt8"]
 
 [node name="Node3D" type="Node3D"]
-script = ExtResource("1_pf405")
-playerScene = ExtResource("1_4eee5")
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="Menu" type="VBoxContainer" parent="Control"]
-layout_mode = 0
-offset_right = 336.0
-offset_bottom = 136.0
-
-[node name="Host" type="Button" parent="Control/Menu"]
-layout_mode = 2
-theme = ExtResource("3_inl5u")
-text = "Host"
-
-[node name="Join" type="Button" parent="Control/Menu"]
-layout_mode = 2
-theme = ExtResource("3_inl5u")
-text = "Join"
-
-[node name="Namefield" type="LineEdit" parent="Control/Menu"]
-layout_mode = 2
-theme = ExtResource("3_inl5u")
-placeholder_text = "Enter Name"
-alignment = 1
-
-[node name="IP Adderess" type="LineEdit" parent="Control/Menu"]
-layout_mode = 2
-theme = ExtResource("3_inl5u")
-placeholder_text = "Enter IP"
-alignment = 1
-
-[node name="Port" type="LineEdit" parent="Control/Menu"]
-layout_mode = 2
-theme = ExtResource("3_inl5u")
-placeholder_text = "Enter Port"
-alignment = 1
-
-[node name="OptionButton" type="OptionButton" parent="Control/Menu"]
-layout_mode = 2
-theme = ExtResource("3_inl5u")
-selected = 0
-item_count = 2
-popup/item_0/text = "Rocket Man"
-popup/item_0/id = 0
-popup/item_1/text = "Winston Hook"
-popup/item_1/id = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hklbe")
@@ -842,6 +785,4 @@ replication_config = SubResource("SceneReplicationConfig_3urgv")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_jmqt8")
 
-[connection signal="pressed" from="Control/Menu/Host" to="." method="_on_host_pressed"]
-[connection signal="pressed" from="Control/Menu/Join" to="." method="_on_join_pressed"]
 [connection signal="body_entered" from="WorldFloor" to="WorldFloor" method="_on_body_entered"]

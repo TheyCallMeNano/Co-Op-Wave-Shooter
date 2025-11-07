@@ -143,11 +143,11 @@ func _ready() -> void:
 	for arg in OS.get_cmdline_args():
 		if arg.contains("--server"):
 			isServer = true
-
 	weaponMenu = weaponMenuScene.instantiate()
 	get_tree().root.add_child(weaponMenu)
 	weaponMenu.hide()
 	weaponMenu.connect("class_selected", Callable(self, "_on_weapon_menu_selected"))
+	$Head/Nametag.text = username
 	
 	if is_multiplayer_authority():
 		globals.clientObj.append(self)
@@ -155,7 +155,6 @@ func _ready() -> void:
 		infoCorner.visible = true
 		if isServer == false:
 			crosshair.visible = true
-			$Head/Nametag.text = username
 			setOldUsernames()
 			print(commandDictionary.keys())
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

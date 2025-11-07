@@ -1,7 +1,10 @@
 extends Node
 
+
+# This shit needs to go somewhere else I don't know what I was fucking thinking when I made this
+# MultiplayerSynchronizer really doesn't like having a non secure node pointer
+# Break these up to where they should be; enemy stuff in waveManager etc.
 var chatLog := []
-var connectedIDs := []
 var clientObj := []
 var gravity := 9.8
 var waveNum := 0

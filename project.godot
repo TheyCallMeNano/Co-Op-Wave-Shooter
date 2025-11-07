@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="MvM Project"
-run/main_scene="res://Rooms/Base.tscn"
+run/main_scene="uid://bwbyiu2g0gibn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 globals="*res://Scripts/scrGlobals.gd"
+MultiplayerManager="*res://Scripts/scrMultiplayerManager.gd"
 
 [debug]
 
