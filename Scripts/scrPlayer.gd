@@ -13,6 +13,7 @@ extends CharacterBody3D
 @onready var hitMarker := $Crosshair/Hitmarker
 @onready var infoCorner := $InfoCorner
 @onready var crosshair := $Crosshair
+@onready var weaponMenuScene := preload("res://UI Elements/weaponMenu.tscn")
 
 # Consts
 const BOB_FREQ = 2.0
@@ -58,11 +59,16 @@ var start_time: int = 0
 var elapsed_time: int = 0
 var speedrunning: int = 0
 var chatArray := []
-var classInt := 0
+enum ClassType { ROCKET, GRAPPLING_HOOK }
+var classInt: ClassType = ClassType.ROCKET
 var chatting := false
 var tBob := 0.0
 var isServer := false
-var weapon : Object = null
+var weapon : Object
+var weaponMenu : Control = null
+var is_menu_open: bool
+var currentWeapon: String
+var weaponInst : Node = null
 var animPlayer : AnimationPlayer = null
 var grappleGun : MeshInstance3D = null
 var grappling := false
@@ -137,7 +143,12 @@ func _ready() -> void:
 	for arg in OS.get_cmdline_args():
 		if arg.contains("--server"):
 			isServer = true
-		
+
+	weaponMenu = weaponMenuScene.instantiate()
+	get_tree().root.add_child(weaponMenu)
+	weaponMenu.hide()
+	weaponMenu.connect("class_selected", Callable(self, "_on_weapon_menu_selected"))
+	
 	if is_multiplayer_authority():
 		globals.clientObj.append(self)
 		$Head/Camera3D/Sprite3D.visible = false
@@ -181,18 +192,23 @@ func _process(delta: float) -> void:
 		if chatting == false && isServer == false:
 			if Input.is_action_just_pressed("chat") && chatting != true:
 				chatActive()
-			
+				
+			if Input.is_action_just_pressed("switchWeapon"):
+				toggle_weapon_menu()
+				
 			if Input.is_action_just_pressed("Interact"):
 				handleSpawning(ball)
 			
+			if is_menu_open:
+				return
 			
 			# Weapon Check
-			if Input.is_action_pressed("primaryFire") && !animPlayer.is_playing() && classInt == 0:
+		if Input.is_action_pressed("primaryFire") && !animPlayer.is_playing() && classInt == ClassType.ROCKET:  # Use enum
 				animPlayer.queue("RocketShoot")
 				handleSpawning(rocket)
-			if Input.is_action_just_pressed("primaryFire") && !animPlayer.is_playing() && classInt == 1:
+		if Input.is_action_just_pressed("primaryFire") && !animPlayer.is_playing() && classInt == ClassType.GRAPPLING_HOOK:  # Use enum
 				grappleStart()
-			elif Input.is_action_just_released("primaryFire") && classInt == 1:
+		elif Input.is_action_just_released("primaryFire") && classInt == ClassType.GRAPPLING_HOOK:  # Use enum
 				grappleStop()
 		
 		if speedrunning == 1:
@@ -279,6 +295,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			head.rotate_y(-event.relative.x * lookAroundSpeed)
 			camera.rotate_x(-event.relative.y * lookAroundSpeed)
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+			
 
 func grappleStart() -> void:
 	if ray.is_colliding():
@@ -292,20 +309,54 @@ func grappleStop() -> void:
 	grappling = false
 
 func classAssignment(cInt: int) -> void:
-	if cInt == 0:
+	
+	if weaponInst and weaponInst.is_inside_tree():
+		weaponInst.queue_free()
+		weaponInst = null
+		animPlayer = null
+		grappleGun = null
+		
+	classInt = cInt
+	
+	if cInt == ClassType.ROCKET:
 		weapon = load("res://Objects/objRocketVM.tscn")
-		var weaponInst : Object = weapon.instantiate()
+		weaponInst = weapon.instantiate()
 		animPlayer = weaponInst.get_child(0)
 		camera.call_deferred("add_child", weaponInst)
-	elif cInt == 1:
+	elif cInt == ClassType.GRAPPLING_HOOK:
 		weapon = load("res://Objects/objGrapplingVM.tscn")
-		var weaponInst : Object = weapon.instantiate()
+		weaponInst = weapon.instantiate()
 		animPlayer = weaponInst.get_child(0)
 		grappleGun = weaponInst
 		ray.position = Vector3(0, 0, -0.6)
 		ray.set_target_position(Vector3(0, 0, -200))
 		camera.call_deferred("add_child", weaponInst)
 
+func toggle_weapon_menu() -> void:
+	is_menu_open = !is_menu_open
+	if is_menu_open:
+		if weaponMenu:
+			weaponMenu.show()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	else:
+		if weaponMenu:
+			weaponMenu.hide()
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		
+func _on_weapon_menu_selected(choice: int) -> void:
+	match choice:
+		0:
+			currentWeapon = "rocket"
+			classAssignment(0)
+		1: 
+			currentWeapon = "grapple"
+			classAssignment(1)
+		_: return
+		
+	is_menu_open = false
+	if weaponMenu:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		weaponMenu.hide()
 
 func commandParser(command: String) -> void:
 	# Define a dictionary where the key is the command and the value is a Callable (function reference) that modifies the respective variable
@@ -511,13 +562,13 @@ func chatActive() -> void:
 	chatting = true
 	inputBox.grab_focus()
 
-#region RPC Calls
+#region RPC calls
 @rpc("unreliable")
 func remoteSetPos(authorityPosition: Vector3, headRot: Vector3, camRot: Vector3) -> void:
 	global_position = authorityPosition
 	head.rotation = headRot
 	camera.rotation = camRot
-
+	
 @rpc("reliable")
 func spawnBallsRemote(r: float, g: float, b:float ) -> void:
 	spawnBall(r, g, b)
