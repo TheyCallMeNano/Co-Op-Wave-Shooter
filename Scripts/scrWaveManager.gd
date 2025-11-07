@@ -25,6 +25,7 @@ func _process(delta: float) -> void:
 		globals.waveNum += 1
 		var spawnAmt := randi_range(1, 10)
 		startNewWave(spawnAmt)
+		
 
 func startNewWave(amt: int) -> void:
 		var spawn_points := get_children()  # Get all children nodes.

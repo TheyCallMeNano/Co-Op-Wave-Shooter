@@ -3,7 +3,7 @@ extends Node3D
 @onready var peer := ENetMultiplayerPeer.new()
 @export var playerScene: PackedScene
 var port := 135
-var address := "137.184.94.3"
+var address := "localhost"
 
 var player_nodes := {}  # Store a mapping between peerID and player nodes
 
