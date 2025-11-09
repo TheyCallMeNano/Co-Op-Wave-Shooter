@@ -8,7 +8,7 @@ extends CharacterBody3D
 
 # Movement
 @export_category("Movement")
-var projectedSpeed: float
+@export var projectedSpeed: float
 @export var jumpVelocity := 4.5
 @export var friction := 6.0
 @export var accel := 5.0
@@ -16,25 +16,29 @@ var projectedSpeed: float
 @export var groundedMax := 15.0
 @export var airMax := 2.5
 @export var linearFriction := 10.0
-var grounded := true
+@export var grounded := true
 var prevGrounded := true
 var wishDir := Vector3.ZERO
 
 var checkpoints := []
-var pathProgress := 0
+@export var pathProgress := 0
 
 var stuckCounter := 0
-var finalDest := Vector3.ZERO
+@export var finalDest := Vector3.ZERO
 
 var plrBody : Object = null
 var spawnPos: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
-	var randomPosition := Vector3(randf_range(-500.0, 500.0), 0, randf_range(-500.0, 500.0))
-	NavAgent.set_target_position(checkpoints[0].global_position)
 	spawnPos = global_position
+	if is_multiplayer_authority():
+		# Only host sets up navigation
+		if checkpoints.size() > 0:
+			NavAgent.set_target_position(checkpoints[pathProgress].global_position)
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
 	var final_position := NavAgent.get_final_position()
 	
 	# Check if the agent has reached the final position within a small threshold distance
@@ -75,8 +79,12 @@ func _physics_process(delta: float) -> void:
 
 func _process(delta: float) -> void:
 	if hp <= 0:
-		globals.eAlive -= 1
-		queue_free()
+		handleDeath()
+
+func handleDeath() -> void:
+	globals.eAlive -= 1
+	MultiplayerManager.livingEnemies.erase(self)
+	queue_free()
 
 func applyFriction(delta: float) -> void:
 	var speedScalar := 0.0
@@ -155,34 +163,24 @@ func clipVelocity(normal: Vector3, overBounce: float, delta: float) -> void:
 	# Below works well if on high globals.gravity
 	velocity.y -= correctionDir.y * (globals.gravity/20)
 
-func _on_sightline_body_entered(body: Node3D) -> void:
-	if body.is_in_group("players"):
-		plrBody = body
-
-
-func _on_sightline_body_exited(body: Node3D) -> void:
-	if body == plrBody:
-		plrBody = null
-
-
-func _on_timer_timeout() -> void:
-	var next_checkpoint := NavAgent.get_next_path_position()
-	#print("Distance to next checkpoint: ", global_position.distance_to(next_checkpoint))
-	#stuckCounter += 1
-	#if stuckCounter < 5:
-		#velocity.y = jumpVelocity
-		#timer.start(1)
-	#elif stuckCounter == 5:
-		#NavAgent.set_target_position(spawnPos)
-		#timer.start(5)
-	#elif stuckCounter > 5:
-		#global_position = spawnPos
-		#stuckCounter = 0
-
-
 func _on_sightline_area_entered(area: Area3D) -> void:
+	if not is_multiplayer_authority():
+		return
+		
 	if area.name == "OnionRing":
 		global_position = spawnPos
 		pathProgress = 0
 		NavAgent.set_target_position(checkpoints[0].global_position)
 		globals.objHP -= 1
+
+func _on_sightline_body_entered(body: Node3D) -> void:
+	if not is_multiplayer_authority():
+		return
+	if body.is_in_group("players"):
+		plrBody = body
+
+func _on_sightline_body_exited(body: Node3D) -> void:
+	if not is_multiplayer_authority():
+		return
+	if body == plrBody:
+		plrBody = null

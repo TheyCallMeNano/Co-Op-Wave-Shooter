@@ -9,9 +9,31 @@ enum ClassType { ROCKET, GRAPPLING_HOOK }
 var sClass: ClassType = ClassType.ROCKET
 var connectedIDs := []
 
+var curWave : int
+var maxWaves: int
+var livingEnemies : Array
+var enemyAmount : int
+var maxEnemyAmount : int
+
 var playerNodes := {}
 # Store client data by peer ID
 var clientData := {}
+
+func setWaveInfo(wave: int, waves: int, aliveEnemies: Array, totalEnemies: int, maxTotalEnemies: int) -> void:
+	curWave = wave
+	maxWaves = waves
+	livingEnemies = aliveEnemies
+	enemyAmount = totalEnemies
+	maxEnemyAmount = maxTotalEnemies
+
+func getWaveInfo() -> Dictionary:
+	return {
+		"curWave" : curWave,
+		"maxWaves" : maxWaves,
+		"livingEnemies" : livingEnemies,
+		"enemyAmount" : enemyAmount,
+		"maxEnemyAmount" : maxEnemyAmount
+	}
 
 func setActiveServerInfo(conectee: ENetMultiplayerPeer, serverPort: int, scene: PackedScene, ip: String, hostUsername: String, playerClass: int) -> void:
 	peer = conectee
@@ -123,8 +145,36 @@ func handleIncoming(hostPort: int, hostIp: String, clientName: String, clientCla
 
 func _onConnectedToServer() -> void:
 	print("Connected to server as client")
-	# Spawn ourselves immediately with our own data
 	spawnLocalPlayer(multiplayer.get_unique_id(), userName, sClass)
+	rpc_id(1, "connectionSync")
+
+@rpc("any_peer")
+func connectionSync() -> void:
+	var peerId := multiplayer.get_remote_sender_id()
+	var enemyData := []
+	# Capture positions RIGHT NOW when client asks
+	for enemy: Node in livingEnemies:
+		if is_instance_valid(enemy):
+			enemyData.append({
+				"name": enemy.name,
+				"path_index": enemy.get_meta("path_index"),
+				"position": enemy.position,
+				"rotation": enemy.rotation,
+				"velocity": enemy.velocity,  # Also sync velocity
+				"hp": enemy.hp,
+				"pathProgress": enemy.pathProgress
+			})
+	
+	rpc_id(peerId, "receiveWaveInfo", curWave, maxWaves, enemyData, enemyAmount, maxEnemyAmount)
+
+@rpc()
+func receiveWaveInfo(wave: int, waves: int, enemyData: Array, alive: int, maxAlive: int) -> void:
+	curWave = wave
+	maxWaves = waves
+	livingEnemies = enemyData
+	enemyAmount = alive
+	maxEnemyAmount = maxAlive
+	print("Client received wave info: " + str(getWaveInfo()))
 
 @rpc("any_peer", "reliable")
 func requestClientData() -> void:

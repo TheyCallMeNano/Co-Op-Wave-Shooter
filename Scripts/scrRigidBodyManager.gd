@@ -17,10 +17,12 @@ func _physics_process(delta: float) -> void:
 		timer.stop()
 
 func _on_timer_timeout() -> void:
+	handleDeath()
+
+func handleDeath() -> void:
 	print("Culling Body: " + str(self))
 	globals.chatLog.append("Culling Body: " + str(self) + "\n")
 	queue_free()
-
 
 @warning_ignore("unused_parameter")
 func _on_body_entered(body: Node) -> void:

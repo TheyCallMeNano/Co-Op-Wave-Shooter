@@ -41,12 +41,14 @@ alignment = 1
 [node name="IP Adderess" type="LineEdit" parent="Menu"]
 layout_mode = 2
 theme = ExtResource("2_aoysj")
+text = "localhost"
 placeholder_text = "Enter IP"
 alignment = 1
 
 [node name="Port" type="LineEdit" parent="Menu"]
 layout_mode = 2
 theme = ExtResource("2_aoysj")
+text = "1364"
 placeholder_text = "Enter Port"
 alignment = 1
 

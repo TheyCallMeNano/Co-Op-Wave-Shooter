@@ -315,7 +315,7 @@ func classAssignment(cInt: int) -> void:
 		animPlayer = null
 		grappleGun = null
 		
-	classInt = cInt
+	classInt = cInt as ClassType
 	
 	if cInt == ClassType.ROCKET:
 		weapon = load("res://Objects/objRocketVM.tscn")

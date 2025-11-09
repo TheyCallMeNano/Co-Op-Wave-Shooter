@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=4 uid="uid://bbhrgy4awbqj"]
+[gd_scene load_steps=57 format=4 uid="uid://bbhrgy4awbqj"]
 
 [ext_resource type="Script" uid="uid://cuafatfinei46" path="res://Scripts/scrBoundry.gd" id="3_m05io"]
 [ext_resource type="Material" uid="uid://rryx8v87cvdm" path="res://textures/Dark/texture_05.tres" id="7_6ddnb"]
@@ -220,6 +220,8 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath(".:difficulty")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jmqt8"]
 
 [node name="Node3D" type="Node3D"]
 
@@ -761,12 +763,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.36003, 0)
 shape = SubResource("BoxShape3D_0m7qq")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://c0p1a33c63s7m")
-spawn_path = NodePath("../SpawnRegion")
+spawn_path = NodePath("..")
 
 [node name="GlobalSync" type="MultiplayerSynchronizer" parent="."]
 editor_description = "IGNORE WARNING IN EDITOR -- ONLY GLOBAL VARS ACCEPTED"
 root_path = NodePath("/root/globals")
 replication_config = SubResource("SceneReplicationConfig_3urgv")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_jmqt8")
 
 [connection signal="body_entered" from="WorldFloor" to="WorldFloor" method="_on_body_entered"]
