@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bylpmrg7yak7r" path="res://crosshair.png" id="5_iwquq"]
 [ext_resource type="Theme" uid="uid://bt2dwcnmmfacw" path="res://uiTheme.tres" id="5_uwqy6"]
 [ext_resource type="Texture2D" uid="uid://epjciyt4vrwq" path="res://hitmarkernonlethal.png" id="8_73r50"]
-[ext_resource type="AudioStream" uid="uid://bpcesmirs8b7t" path="res://hitsound.ogg" id="8_sdjce"]
+[ext_resource type="AudioStream" uid="uid://bpcesmirs8b7t" path="res://Sounds/hitsound.ogg" id="8_sdjce"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x5jbe"]
 

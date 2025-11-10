@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://cdj6mvfaddrdt"
-path="res://.godot/imported/Quake_rpg_fire_remastered.wav-bbbbd593636d7332feefedbe44acb842.sample"
+path="res://.godot/imported/Quake_rpg_fire_remastered.wav-5c3090aa3d5bf2ef0aa80361bd7665b7.sample"
 
 [deps]
 
-source_file="res://Quake_rpg_fire_remastered.wav"
-dest_files=["res://.godot/imported/Quake_rpg_fire_remastered.wav-bbbbd593636d7332feefedbe44acb842.sample"]
+source_file="res://Sounds/Quake_rpg_fire_remastered.wav"
+dest_files=["res://.godot/imported/Quake_rpg_fire_remastered.wav-5c3090aa3d5bf2ef0aa80361bd7665b7.sample"]
 
 [params]
 
