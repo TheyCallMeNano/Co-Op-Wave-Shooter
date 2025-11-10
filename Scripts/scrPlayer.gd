@@ -204,6 +204,7 @@ func _process(delta: float) -> void:
 			# Weapon Check
 		if Input.is_action_pressed("primaryFire") && !animPlayer.is_playing() && classInt == ClassType.ROCKET:  # Use enum
 				animPlayer.queue("RocketShoot")
+				rpc("syncWeapon", {"animPlayer" : animPlayer.get_path(), "animation" : "RocketShoot"})
 				handleSpawning(rocket)
 		if Input.is_action_just_pressed("primaryFire") && !animPlayer.is_playing() && classInt == ClassType.GRAPPLING_HOOK:  # Use enum
 				grappleStart()
@@ -308,7 +309,6 @@ func grappleStop() -> void:
 	grappling = false
 
 func classAssignment(cInt: int) -> void:
-	
 	if weaponInst and weaponInst.is_inside_tree():
 		weaponInst.queue_free()
 		weaponInst = null
@@ -320,8 +320,10 @@ func classAssignment(cInt: int) -> void:
 	if cInt == ClassType.ROCKET:
 		weapon = load("res://Objects/objRocketVM.tscn")
 		weaponInst = weapon.instantiate()
+		weaponInst.set_multiplayer_authority(get_multiplayer_authority())
 		animPlayer = weaponInst.get_child(0)
 		camera.call_deferred("add_child", weaponInst)
+		
 	elif cInt == ClassType.GRAPPLING_HOOK:
 		weapon = load("res://Objects/objGrapplingVM.tscn")
 		weaponInst = weapon.instantiate()
@@ -341,7 +343,7 @@ func toggle_weapon_menu() -> void:
 		if weaponMenu:
 			weaponMenu.hide()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		
+
 func _on_weapon_menu_selected(choice: int) -> void:
 	match choice:
 		0:
@@ -372,8 +374,6 @@ func commandParser(command: String) -> void:
 			break
 
 func setOldUsernames() -> void:
-	print("Iterating " + str(get_multiplayer_authority()))
-	print(globals.clientObj.size())
 	for i in globals.clientObj.size():
 		print("Set name " + str(globals.clientObj[i].username) + " to player " + str(globals.clientObj[i]))
 		globals.clientObj[i].get_child(1).get_child(0).text = globals.clientObj[i].username
@@ -496,7 +496,7 @@ func spawnRocket(rot: Vector3) -> void:
 	rocketInst.spawner = self
 	rocketInst.pSpeed = float((velocity * Vector3(1, 0, 1)).length())
 	rocketInst.rotation = rot
-	get_parent().call_deferred("add_child", rocketInst)
+	get_parent().add_child(rocketInst)
 
 func spawnBall(red: float, green: float, blue: float) -> void:
 	var randomColor := StandardMaterial3D.new()
@@ -506,7 +506,7 @@ func spawnBall(red: float, green: float, blue: float) -> void:
 	var result : Dictionary = ray_data.result
 	var ray_target : Vector3 = ray_data.ray_target
 	# Defer adding the instance to the scene tree to ensure it's properly initialized
-	get_tree().get_root().call_deferred("add_child", ballInst)
+	get_tree().get_root().add_child(ballInst)
 	# Use call_deferred to set the position after the instance is added to the tree
 	if result:
 		ballInst.call_deferred("set_position", result.position)
@@ -567,7 +567,13 @@ func remoteSetPos(authorityPosition: Vector3, headRot: Vector3, camRot: Vector3)
 	global_position = authorityPosition
 	head.rotation = headRot
 	camera.rotation = camRot
-	
+
+@rpc("unreliable")
+func syncWeapon(weaponInfo: Dictionary) -> void:
+	for key: String in weaponInfo.keys():
+		if key == "animPlayer":
+			get_node(weaponInfo["animPlayer"]).queue(weaponInfo["animation"])
+
 @rpc("reliable")
 func spawnBallsRemote(r: float, g: float, b:float ) -> void:
 	spawnBall(r, g, b)

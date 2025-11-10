@@ -39,7 +39,7 @@ func _on_timer_timeout() -> void:
 func _on_explosion_radius_body_entered(body: Node3D) -> void:
 	if body.is_in_group("bodies"):
 		repelBody(body)
-	if body.is_in_group("enemies"):
+	if body.is_in_group("enemies") && is_multiplayer_authority():
 		var critChance := randi_range(spawner.critBucketCur, spawner.critBucketMax)
 		var dmg: float
 		if critChance >= spawner.critBucketMax * 0.75:

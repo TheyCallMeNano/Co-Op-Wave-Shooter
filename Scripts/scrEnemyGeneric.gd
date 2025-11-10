@@ -82,9 +82,11 @@ func _process(delta: float) -> void:
 		handleDeath()
 
 func handleDeath() -> void:
-	globals.eAlive -= 1
-	MultiplayerManager.livingEnemies.erase(self)
-	queue_free()
+	if is_multiplayer_authority():
+		globals.eAlive -= 1
+		MultiplayerManager.livingEnemies.erase(self)
+		rpc("updateEnemyCount", globals.eAlive)
+		queue_free()
 
 func applyFriction(delta: float) -> void:
 	var speedScalar := 0.0
@@ -184,3 +186,7 @@ func _on_sightline_body_exited(body: Node3D) -> void:
 		return
 	if body == plrBody:
 		plrBody = null
+
+@rpc()
+func updateEnemyCount(enemiesAlive: int) -> void:
+		globals.eAlive = enemiesAlive

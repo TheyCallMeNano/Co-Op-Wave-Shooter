@@ -47,7 +47,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 @warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
-	if globals.eAlive == 0 && globals.waveNum != globals.waveNumMax:
+	if globals.eAlive == 0 && globals.waveNum != globals.waveNumMax && is_multiplayer_authority():
 		globals.waveNum += 1
 		var spawnAmt := randi_range(1, 10)
 		startNewWave(spawnAmt)
@@ -93,9 +93,16 @@ func startNewWave(amt: int) -> void:
 		enemyInst.set_multiplayer_authority(1)
 		globals.eAlive += 1
 		call_deferred("add_child", enemyInst)
-	
+	MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, aliveEnemies, globals.eAlive, globals.eMax)
+	rpc("updateWaveInfo", MultiplayerManager.getWaveInfo())
 	# Wait for all enemies to be added before collecting them
 	call_deferred("_collect_alive_enemies")
+
+@rpc()
+func updateWaveInfo(waveInfo: Dictionary) -> void:
+		globals.waveNum = waveInfo["curWave"]
+		globals.eAlive = waveInfo["enemyAmount"]
+		globals.eMax = waveInfo["maxEnemyAmount"]
 
 func _collect_alive_enemies() -> void:
 	aliveEnemies.clear()  # Clear the array first

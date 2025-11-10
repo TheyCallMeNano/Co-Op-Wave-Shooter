@@ -28,7 +28,7 @@ emission_energy_multiplier = 0.25
 [sub_resource type="BoxMesh" id="BoxMesh_awrhg"]
 material = SubResource("StandardMaterial3D_4u3ht")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3xmdh"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4ym2e"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
@@ -90,7 +90,7 @@ scale_amount_min = 0.2
 scale_amount_max = 0.5
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_3xmdh")
+replication_config = SubResource("SceneReplicationConfig_4ym2e")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="body_entered" from="Explosion Radius" to="." method="_on_explosion_radius_body_entered"]

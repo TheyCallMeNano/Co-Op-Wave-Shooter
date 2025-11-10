@@ -109,7 +109,7 @@ func spawnLocalPlayer(peerId: int, playerName: String, selectedClass: ClassType)
 		player.username = playerName
 	player.classInt = selectedClass
 	playerNodes[peerId] = player
-	call_deferred("add_child", player)
+	add_child(player)
 	print("Spawned local player " + playerName + " with ID " + str(peerId) + " and authority " + str(peerId))
 
 func addRemotePlayer(peerId: int, playerName: String, selectedClass: ClassType) -> void:
@@ -128,7 +128,7 @@ func addRemotePlayer(peerId: int, playerName: String, selectedClass: ClassType) 
 		player.username = playerName
 	player.classInt = selectedClass
 	playerNodes[peerId] = player
-	call_deferred("add_child", player)
+	add_child(player)
 	print("Added remote player " + playerName + " with ID " + str(peerId))
 
 func handleIncoming(hostPort: int, hostIp: String, clientName: String, clientClass: int) -> void:

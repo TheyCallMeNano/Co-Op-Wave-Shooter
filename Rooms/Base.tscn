@@ -761,7 +761,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.36003, 0)
 shape = SubResource("BoxShape3D_0m7qq")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://c0p1a33c63s7m")
+_spawnable_scenes = PackedStringArray("uid://c0p1a33c63s7m", "uid://bgym2byp0grhj", "uid://coyaclap7dcdh")
 spawn_path = NodePath("../SpawnRegion")
 
 [node name="GlobalSync" type="MultiplayerSynchronizer" parent="."]

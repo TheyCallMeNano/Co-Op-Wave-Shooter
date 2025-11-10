@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dfvwlanihtgh7"]
+[gd_scene load_steps=11 format=3 uid="uid://dfvwlanihtgh7"]
 
 [ext_resource type="Script" uid="uid://bkndld8tk4j2" path="res://Scripts/scrPlayer.gd" id="1_mmjxm"]
 [ext_resource type="Material" uid="uid://bcsr1ck18tigu" path="res://textures/PlayerMat.tres" id="2_1yy68"]
@@ -16,38 +16,6 @@
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/constants/outline_size = 50
 Label/font_sizes/font_size = 240
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_786kr"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath("Head/Camera3D/Sprite3D:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath("Head/Camera3D/RocketVM:rotation")
-properties/2/spawn = true
-properties/2/replication_mode = 1
-properties/3/path = NodePath("Head:rotation")
-properties/3/spawn = true
-properties/3/replication_mode = 1
-properties/4/path = NodePath(".:rotation")
-properties/4/spawn = true
-properties/4/replication_mode = 1
-properties/5/path = NodePath("Head/Camera3D:rotation")
-properties/5/spawn = true
-properties/5/replication_mode = 1
-properties/6/path = NodePath("Head/Nametag:text")
-properties/6/spawn = true
-properties/6/replication_mode = 1
-properties/7/path = NodePath("Head/Camera3D/RocketVM:position")
-properties/7/spawn = true
-properties/7/replication_mode = 1
-properties/8/path = NodePath("Body:disabled")
-properties/8/spawn = true
-properties/8/replication_mode = 1
-properties/9/path = NodePath(".:visible")
-properties/9/spawn = true
-properties/9/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
 script = ExtResource("1_mmjxm")
@@ -146,9 +114,6 @@ vertical_alignment = 1
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_sdjce")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_786kr")
 
 [node name="markerTimer" type="Timer" parent="."]
 
