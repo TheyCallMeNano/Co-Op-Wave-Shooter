@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bgym2byp0grhj"]
 
 [ext_resource type="Script" uid="uid://cxemg356orq3c" path="res://Scripts/scrRigidBodyManager.gd" id="1_rjflk"]
-[ext_resource type="AudioStream" uid="uid://cd8igu1udw4te" path="res://basketball-2-103714.mp3" id="2_ahrpk"]
+[ext_resource type="AudioStream" uid="uid://cd8igu1udw4te" path="res://Sounds/basketball-2-103714.mp3" id="2_ahrpk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bbpod"]
 albedo_color = Color(0.174093, 5.77569e-07, 0.883045, 1)

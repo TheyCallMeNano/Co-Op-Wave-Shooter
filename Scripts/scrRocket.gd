@@ -61,13 +61,13 @@ func _on_explosion_radius_body_entered(body: Node3D) -> void:
 			spawner.hitMarker.visible = true
 			spawner.hitMarker.texture = load("res://hitmarkerLethal.png")
 			spawner.timer.start(0.25)
-			spawner.UIAudio.stream = load("res://killsound.ogg")
+			spawner.UIAudio.stream = load("res://Sounds/killsound.ogg")
 			spawner.UIAudio.play()
 		else:
 			spawner.hitMarker.visible = true
 			spawner.hitMarker.texture = load("res://hitmarkernonlethal.png")
 			spawner.timer.start(0.25)
-			spawner.UIAudio.stream = load("res://hitsound.ogg")
+			spawner.UIAudio.stream = load("res://Sounds/hitsound.ogg")
 			spawner.UIAudio.play()
 		body.hp -= dmg
 		globals.chatLog.append(spawner.username + " did " + str(int(dmg)) + " to " + body.name + "\n")

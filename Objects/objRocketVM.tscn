@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cmlmm6cwln3pg"]
 
 [ext_resource type="PackedScene" uid="uid://c8kqpaxkqf8tg" path="res://Models/Rocket Launcher/modRocketLauncher01.gltf" id="1_qiqqf"]
-[ext_resource type="AudioStream" uid="uid://cdj6mvfaddrdt" path="res://Quake_rpg_fire_remastered.wav" id="2_qkwv0"]
+[ext_resource type="AudioStream" uid="uid://cdj6mvfaddrdt" path="res://Sounds/Quake_rpg_fire_remastered.wav" id="2_qkwv0"]
 
 [sub_resource type="Animation" id="Animation_nk076"]
 length = 0.001
