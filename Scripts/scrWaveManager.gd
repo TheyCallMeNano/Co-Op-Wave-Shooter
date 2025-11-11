@@ -20,29 +20,16 @@ func _ready() -> void:
 			globals.eAlive = spawnAmt
 			globals.eMax = spawnAmt
 			await get_tree().process_frame
-			MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, aliveEnemies, globals.eAlive, globals.eMax)
+			MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, globals.eAlive, globals.eMax)
 	else:
 		var waveInfo := MultiplayerManager.getWaveInfo()
-		if waveInfo["livingEnemies"].size() == 0:
-			await get_tree().create_timer(0.1).timeout
-			waveInfo = MultiplayerManager.getWaveInfo()
-			globals.waveNum = waveInfo["curWave"]
-			globals.waveNumMax = waveInfo["maxWaves"]
-			globals.eAlive = waveInfo["enemyAmount"]
-			globals.eMax = waveInfo["maxEnemyAmount"]
+		await get_tree().create_timer(0.1).timeout
+		waveInfo = MultiplayerManager.getWaveInfo()
+		globals.waveNum = waveInfo["curWave"]
+		globals.waveNumMax = waveInfo["maxWaves"]
+		globals.eAlive = waveInfo["enemyAmount"]
+		globals.eMax = waveInfo["maxEnemyAmount"]
 		
-		#for enemyData: Dictionary in waveInfo["livingEnemies"]:
-			#var enemyInst := enemy.instantiate()
-			#enemyInst.name = enemyData["name"]
-			#enemyInst.position = enemyData["position"]
-			#enemyInst.rotation = enemyData["rotation"]
-			#
-			#var path_choice := "../Paths/Path" + str(enemyData["path_index"])
-			#var path_node := get_node(path_choice)
-			#enemyInst.checkpoints = path_node.get_children()
-			#
-			#enemyInst.set_multiplayer_authority(1)  # Server has authority
-			#add_child(enemyInst)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 @warning_ignore("unused_parameter")
@@ -93,21 +80,11 @@ func startNewWave(amt: int) -> void:
 		enemyInst.set_multiplayer_authority(1)
 		globals.eAlive += 1
 		call_deferred("add_child", enemyInst)
-	MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, aliveEnemies, globals.eAlive, globals.eMax)
+	MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, globals.eAlive, globals.eMax)
 	rpc("updateWaveInfo", MultiplayerManager.getWaveInfo())
-	# Wait for all enemies to be added before collecting them
-	call_deferred("_collect_alive_enemies")
 
 @rpc()
 func updateWaveInfo(waveInfo: Dictionary) -> void:
 		globals.waveNum = waveInfo["curWave"]
 		globals.eAlive = waveInfo["enemyAmount"]
 		globals.eMax = waveInfo["maxEnemyAmount"]
-
-func _collect_alive_enemies() -> void:
-	aliveEnemies.clear()  # Clear the array first
-	for child: Node in get_children():
-		if child.is_in_group("enemies"):
-			aliveEnemies.append(child)
-	MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, aliveEnemies, globals.eAlive, globals.eMax)
-	print(str(MultiplayerManager.getWaveInfo()))

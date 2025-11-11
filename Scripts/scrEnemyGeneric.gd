@@ -84,7 +84,6 @@ func _process(delta: float) -> void:
 func handleDeath() -> void:
 	if is_multiplayer_authority():
 		globals.eAlive -= 1
-		MultiplayerManager.livingEnemies.erase(self)
 		rpc("updateEnemyCount", globals.eAlive)
 		queue_free()
 

@@ -11,7 +11,6 @@ var connectedIDs := []
 
 var curWave : int
 var maxWaves: int
-var livingEnemies : Array
 var enemyAmount : int
 var maxEnemyAmount : int
 
@@ -19,10 +18,9 @@ var playerNodes := {}
 # Store client data by peer ID
 var clientData := {}
 
-func setWaveInfo(wave: int, waves: int, aliveEnemies: Array, totalEnemies: int, maxTotalEnemies: int) -> void:
+func setWaveInfo(wave: int, waves: int, totalEnemies: int, maxTotalEnemies: int) -> void:
 	curWave = wave
 	maxWaves = waves
-	livingEnemies = aliveEnemies
 	enemyAmount = totalEnemies
 	maxEnemyAmount = maxTotalEnemies
 
@@ -30,7 +28,6 @@ func getWaveInfo() -> Dictionary:
 	return {
 		"curWave" : curWave,
 		"maxWaves" : maxWaves,
-		"livingEnemies" : livingEnemies,
 		"enemyAmount" : enemyAmount,
 		"maxEnemyAmount" : maxEnemyAmount
 	}
@@ -151,27 +148,13 @@ func _onConnectedToServer() -> void:
 @rpc("any_peer")
 func connectionSync() -> void:
 	var peerId := multiplayer.get_remote_sender_id()
-	var enemyData := []
-	# Capture positions RIGHT NOW when client asks
-	for enemy: Node in livingEnemies:
-		if is_instance_valid(enemy):
-			enemyData.append({
-				"name": enemy.name,
-				"path_index": enemy.get_meta("path_index"),
-				"position": enemy.position,
-				"rotation": enemy.rotation,
-				"velocity": enemy.velocity,  # Also sync velocity
-				"hp": enemy.hp,
-				"pathProgress": enemy.pathProgress
-			})
 	
-	rpc_id(peerId, "receiveWaveInfo", curWave, maxWaves, enemyData, enemyAmount, maxEnemyAmount)
+	rpc_id(peerId, "receiveWaveInfo", curWave, maxWaves, enemyAmount, maxEnemyAmount)
 
 @rpc()
-func receiveWaveInfo(wave: int, waves: int, enemyData: Array, alive: int, maxAlive: int) -> void:
+func receiveWaveInfo(wave: int, waves: int, alive: int, maxAlive: int) -> void:
 	curWave = wave
 	maxWaves = waves
-	livingEnemies = enemyData
 	enemyAmount = alive
 	maxEnemyAmount = maxAlive
 	print("Client received wave info: " + str(getWaveInfo()))
