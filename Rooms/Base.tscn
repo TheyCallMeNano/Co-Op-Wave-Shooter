@@ -243,7 +243,8 @@ local_map_file = "res://Maps/base.map"
 map_settings = ExtResource("16_g5pmy")
 
 [node name="entity_0_worldspawn" type="StaticBody3D" parent="NavigationRegion3D/FuncGodotMap"]
-collision_mask = 0
+collision_layer = 3
+collision_mask = 3
 
 [node name="entity_0_mesh_instance" type="MeshInstance3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn"]
 mesh = SubResource("ArrayMesh_6ddnb")

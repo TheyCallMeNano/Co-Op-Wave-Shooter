@@ -96,7 +96,8 @@ var commandDictionary := {
 				globals.chatLog.append("Spawning in " + str(amnt) + " " + val + "\n")
 				
 				for j in amnt:
-					handleSpawning(spawnables[i]),
+					handleSpawning(i)
+					rpc("spawnRemote", i),
 	"accel": func(val: String) -> void:
 		var value := val.to_float()
 		accel = value,
@@ -169,6 +170,9 @@ func _ready() -> void:
 @warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
+		if $Head/Camera3D/pointer.is_colliding():
+			var collision_point :Vector3= $Head/Camera3D/pointer.get_collision_point()
+			$Crosshair.set_position($Head/Camera3D.unproject_position(collision_point) - $Crosshair.pivot_offset)
 		$InfoCorner/WaveInfo.text = "Wave: " + str(globals.waveNum) + " of " + str(globals.waveNumMax) + "\nThere are: " + str(globals.eAlive) + " enemies alive.\nOnion Ring at: " + str(globals.objHP)
 		$Crosshair/SpeedLabel.text = str( int( ( velocity * Vector3(1, 0, 1) ).length() ) )
 		if globals.chatLog.size() < 5 && chatArray != globals.chatLog:
@@ -196,7 +200,8 @@ func _process(delta: float) -> void:
 				toggle_weapon_menu()
 				
 			if Input.is_action_just_pressed("Interact"):
-				handleSpawning(ball)
+				handleSpawning("ball")
+				rpc("spawnRemote", "ball")
 			
 			if is_menu_open:
 				return
@@ -205,7 +210,8 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed("primaryFire") && !animPlayer.is_playing() && classInt == ClassType.ROCKET:  # Use enum
 				animPlayer.queue("RocketShoot")
 				rpc("syncWeapon", {"animPlayer" : animPlayer.get_path(), "animation" : "RocketShoot"})
-				handleSpawning(rocket)
+				handleSpawning("rocket")
+				rpc("spawnRemote", "rocket")
 		if Input.is_action_just_pressed("primaryFire") && !animPlayer.is_playing() && classInt == ClassType.GRAPPLING_HOOK:  # Use enum
 				grappleStart()
 		elif Input.is_action_just_released("primaryFire") && classInt == ClassType.GRAPPLING_HOOK:  # Use enum
@@ -514,20 +520,18 @@ func spawnBall(red: float, green: float, blue: float) -> void:
 		ballInst.call_deferred("set_position", ray_target)
 	ballInst.get_child(0).material_override = randomColor
 
-func handleSpawning(obj : Object) -> void:
-	if obj == ball:
+func handleSpawning(type: String) -> void:
+	if type == "ball":
 		var r := randf_range(0.01, 1.0)
 		var g := randf_range(0.01, 1.0)
 		var b := randf_range(0.01, 1.0)
 		spawnBall(r,g,b)
-		rpc("spawnBallsRemote", r, g, b)
 	
-	elif obj == rocket:
+	elif type == "rocket":
 		var rot : Vector3 = $Head/Camera3D.rotation + $Head.rotation
 		spawnRocket(rot)
-		rpc("spawnRocketRemote", rot)
 	
-	elif obj == enemy:
+	elif type == "enemy":
 		spawnEnemy()
 #endregion
 
@@ -574,15 +578,8 @@ func syncWeapon(weaponInfo: Dictionary) -> void:
 		if key == "animPlayer":
 			get_node(weaponInfo["animPlayer"]).queue(weaponInfo["animation"])
 
-@rpc("reliable")
-func spawnBallsRemote(r: float, g: float, b:float ) -> void:
-	spawnBall(r, g, b)
-
-@rpc("reliable")
-func spawnRocketRemote(rot: Vector3) -> void:
-	spawnRocket(rot)
-
-@rpc("reliable")
-func spawnEnemyRemote() -> void:
-	spawnEnemy()
+@rpc 
+func spawnRemote(type : String) -> void:
+	print("Spawning ", type)
+	handleSpawning(type)
 #endregion

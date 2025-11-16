@@ -15,7 +15,7 @@
 [sub_resource type="Theme" id="Theme_yspqb"]
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/constants/outline_size = 50
-Label/font_sizes/font_size = 240
+Label/font_sizes/font_size = 200
 
 [node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
 script = ExtResource("1_mmjxm")
@@ -46,6 +46,11 @@ texture = ExtResource("3_tm7ya")
 [node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.6)
 target_position = Vector3(0, 0, -1)
+
+[node name="pointer" type="RayCast3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.6)
+target_position = Vector3(0, 0, -100)
+collision_mask = 2
 
 [node name="Area" type="Area3D" parent="."]
 
@@ -82,13 +87,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -48.0
-offset_top = -48.0
-offset_right = 432.0
-offset_bottom = 432.0
+offset_left = -144.0
+offset_top = -144.0
+offset_right = 144.0
+offset_bottom = 144.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.2, 0.2)
+scale = Vector2(0.3, 0.3)
+pivot_offset = Vector2(144, 144)
 mouse_filter = 2
 texture = ExtResource("5_iwquq")
 
@@ -96,8 +102,8 @@ texture = ExtResource("5_iwquq")
 visible = false
 show_behind_parent = true
 layout_mode = 0
-offset_right = 480.0
-offset_bottom = 480.0
+offset_right = 288.0
+offset_bottom = 288.0
 texture = ExtResource("8_73r50")
 
 [node name="SpeedLabel" type="Label" parent="Crosshair"]
@@ -105,9 +111,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.833
 anchor_bottom = 0.833
-offset_top = 0.159943
-offset_right = 480.0
-offset_bottom = 437.16
+offset_left = 30.666708
+offset_top = 27.429459
+offset_right = 258.66672
+offset_bottom = 300.4295
 theme = SubResource("Theme_yspqb")
 horizontal_alignment = 1
 vertical_alignment = 1

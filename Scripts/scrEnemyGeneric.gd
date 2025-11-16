@@ -84,6 +84,7 @@ func _process(delta: float) -> void:
 func handleDeath() -> void:
 	if is_multiplayer_authority():
 		globals.eAlive -= 1
+		MultiplayerManager.setWaveInfo(globals.waveNum, globals.waveNumMax, globals.eAlive, globals.eMax)
 		rpc("updateEnemyCount", globals.eAlive)
 		queue_free()
 
