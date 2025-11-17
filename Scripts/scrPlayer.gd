@@ -26,10 +26,10 @@ var projectedSpeed: float
 @export var restLength := 2.0
 @export var stiffness := 1.0
 @export var dmp := 1.0
-@export var lookAroundSpeed := 0.005
+@export var lookAroundSpeed := 0.0025
 @export var push := 5.0 
-@export var friction := 6.0
-@export var accel := 5.0
+@export var friction := 5.5
+@export var accel := 4.4
 @export var accelAir := 8.0
 @export var groundedMax := 10.0
 @export var airMax := 2.5
