@@ -7,9 +7,6 @@ extends Node3D
 @onready var childrenAmt := get_child_count()
 var aliveEnemies : Array
 
-# URGENT: 2 options for wave syncing force players to reset and start waves themelves
-# or use the synced info upon update to get updated spawns
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if is_multiplayer_authority():
 		if globals.waveNum == 0 && globals.waveNumMax == 0:

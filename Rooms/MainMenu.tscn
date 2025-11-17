@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://daidcyjp4sodq" path="res://Scripts/scrServerSelector.gd" id="1_kw4ua"]
 [ext_resource type="Theme" uid="uid://bt2dwcnmmfacw" path="res://uiTheme.tres" id="2_aoysj"]
-[ext_resource type="PackedScene" uid="uid://bbhrgy4awbqj" path="res://Rooms/Base.tscn" id="2_ovmk2"]
+[ext_resource type="PackedScene" uid="uid://scljsyc0j8xe" path="res://Rooms/MannhattanTest.tscn" id="2_ovmk2"]
 
 [node name="Control" type="Control"]
 layout_mode = 3

@@ -1,3 +1,10 @@
+SpotLight3D
+Node3D
+CSGMesh3D
+CSGPolygon3D
+CSGBox3D
+NavigationRegion3D
+MeshInstance3D
 MultiplayerSynchronizer
 ScrollContainer
 Container
@@ -6,9 +13,3 @@ VBoxContainer
 Control
 Node2D
 Node
-PanelContainer
-Button
-Panel
-CharacterBody3D
-Node3D
-CSGBox3D

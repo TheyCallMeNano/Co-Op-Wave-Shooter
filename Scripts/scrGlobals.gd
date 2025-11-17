@@ -6,7 +6,7 @@ extends Node
 # Break these up to where they should be; enemy stuff in waveManager etc.
 var chatLog := []
 var clientObj := []
-var gravity := 9.8
+var gravity := 14.7
 var waveNum := 0
 var waveNumMax := 0
 var eAlive := 0

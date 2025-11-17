@@ -116,6 +116,7 @@ switchWeapon={
 
 common/physics_ticks_per_second=120
 common/max_physics_steps_per_frame=16
+3d/default_gravity=14.700000000000005
 
 [rendering]
 

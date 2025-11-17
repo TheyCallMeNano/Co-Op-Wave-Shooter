@@ -19,7 +19,6 @@ Label/font_sizes/font_size = 200
 
 [node name="Player" type="CharacterBody3D" groups=["bodies", "players"]]
 script = ExtResource("1_mmjxm")
-jumpVelocity = 9.0
 
 [node name="Body" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_x5jbe")

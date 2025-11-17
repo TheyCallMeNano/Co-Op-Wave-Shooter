@@ -16,8 +16,8 @@ extends CharacterBody3D
 @onready var weaponMenuScene := preload("res://UI Elements/weaponMenu.tscn")
 
 # Consts
-const BOB_FREQ = 2.0
-const BOB_AMP = 0.08
+const BOB_FREQ = 1.0
+const BOB_AMP = 0.04
 
 # Movement
 @export_category("Movement")
@@ -30,10 +30,10 @@ var projectedSpeed: float
 @export var push := 5.0 
 @export var friction := 6.0
 @export var accel := 5.0
-@export var accelAir := 40.0
-@export var groundedMax := 15.0
+@export var accelAir := 8.0
+@export var groundedMax := 10.0
 @export var airMax := 2.5
-@export var linearFriction := 10.0
+@export var linearFriction := 4.0
 @export var autoBhop := true
 var grounded := true
 var prevGrounded := true
@@ -420,7 +420,7 @@ func clipVelocity(normal: Vector3, overBounce: float, delta: float) -> void:
 	correctionDir = normal * correctionAmt
 	velocity -= correctionDir
 	# Below works well if on high globals.gravity
-	velocity.y -= correctionDir.y * (globals.gravity/20)
+	velocity.y -= correctionDir.y * (globals.gravity)
 
 func applyFriction(delta: float) -> void:
 	var speedScalar := 0.0
