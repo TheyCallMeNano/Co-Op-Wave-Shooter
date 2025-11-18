@@ -22,7 +22,7 @@ const BOB_AMP = 0.04
 # Movement
 @export_category("Movement")
 var projectedSpeed: float
-@export var jumpVelocity := 4.5
+@export var jumpVelocity := 5.75
 @export var restLength := 2.0
 @export var stiffness := 1.0
 @export var dmp := 1.0
@@ -411,16 +411,17 @@ func get_elapsed_time() -> String:
 #region Movement
 @warning_ignore("unused_parameter")
 func clipVelocity(normal: Vector3, overBounce: float, delta: float) -> void:
-	var correctionAmt := 0.0
-	var correctionDir := Vector3.ZERO
-	var moveDir : Vector3 = get_velocity().normalized()
-	
-	correctionAmt = moveDir.dot(normal) * overBounce
-	
-	correctionDir = normal * correctionAmt
-	velocity -= correctionDir
-	# Below works well if on high globals.gravity
-	velocity.y -= correctionDir.y * (globals.gravity)
+	if normal == Vector3.ZERO:
+		return
+	if velocity.length() < 0.0001:
+		return
+
+	var moveDir : Vector3 = velocity.normalized()
+	var correctionAmt := moveDir.dot(normal) * overBounce
+	# Only correct when moving into the surface (correctionAmt > 0)
+	if correctionAmt > 0.0:
+		var correctionDir := normal * correctionAmt
+		velocity -= correctionDir
 
 func applyFriction(delta: float) -> void:
 	var speedScalar := 0.0
@@ -476,7 +477,7 @@ func groundMove(delta: float) -> void:
 		applyFriction(delta)
 	
 	if is_on_wall():
-		clipVelocity(get_wall_normal(), 1, delta)
+		clipVelocity(get_wall_normal(), 0.5, delta)
 #endregion
 
 #region Spawn Management
