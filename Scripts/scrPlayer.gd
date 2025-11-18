@@ -503,6 +503,40 @@ func spawnRocket(rot: Vector3) -> void:
 	rocketInst.pSpeed = float((velocity * Vector3(1, 0, 1)).length())
 	rocketInst.rotation = rot
 	get_parent().add_child(rocketInst)
+	
+func deal_damage(body: Node3D, pSpeed: float) -> void:
+	var critChance := randi_range(critBucketCur, critBucketMax)
+	var dmg: float
+	if critChance >= critBucketMax * 0.75:
+		print(username + " landed a crit with the chance - " + str(critChance) + " out of " + str(critBucketMax))
+		if pSpeed != 0:
+			dmg = 20.0 + (pSpeed * 0.55) * 3.0
+		else:
+			dmg = 20.0 + (1 * 1.55) * 3.0
+		if critBucketCur <= (critBucketMax * 0.25):
+			critBucketCur = critBucketMin
+		else:
+			critBucketCur += -(critBucketMax * 0.25) + dmg
+		print(username + " crit chance is now at - " + str(critBucketCur))
+	else:
+		print(username + " didn't land a crit, current chance is - " + str(critBucketCur))
+		dmg = 20.0 + (pSpeed * 0.35)
+		critBucketCur += dmg
+	if dmg >= body.hp:
+		hitMarker.visible = true
+		hitMarker.texture = load("res://hitmarkerLethal.png")
+		timer.start(0.25)
+		UIAudio.stream = load("res://Sounds/killsound.ogg")
+		UIAudio.play()
+	else:
+		hitMarker.visible = true
+		hitMarker.texture = load("res://hitmarkernonlethal.png")
+		timer.start(0.25)
+		UIAudio.stream = load("res://Sounds/hitsound.ogg")
+		UIAudio.play()
+	body.hp -= dmg
+	globals.chatLog.append(username + " did " + str(int(dmg)) + " to " + body.name + "\n")
+	
 
 func spawnBall(red: float, green: float, blue: float) -> void:
 	var randomColor := StandardMaterial3D.new()
